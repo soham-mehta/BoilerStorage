@@ -6,6 +6,9 @@ import {
   Route,
   Routes
 } from 'react-router-dom'
+import NavBar from './Components/Home/NavBar';
+import Login from './Components/Home/Login';
+import SignUp from './Components/Home/SignUp';
 
 /* 
 <Route path='/home/:authenticated/:name' Component={Home} />
@@ -20,7 +23,10 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route exact path='/SignUp/' Component={SignUp} />
+        <Route exact path='/Login/' Component={Login} />
         <Route exact path='/' Component={Home} />
+        
       </Routes>
     </Router>
   );

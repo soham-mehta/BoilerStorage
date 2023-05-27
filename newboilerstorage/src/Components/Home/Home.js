@@ -12,6 +12,8 @@ const navigation = [
   { name: "Features", href: "#features" },
   { name: "Pricing", href: "#pricing" },
   { name: "FAQ", href: "#faq" },
+  { name: "Login", href: "/Login" },
+  { name: "SignUp", href: "/SignUp" },
   { name: "Contact", href: "mailto:emblifyai@gmail.com" },
 ];
 
