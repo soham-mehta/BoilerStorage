@@ -9,6 +9,7 @@ import {
 import Login from './Components/Auth/Login';
 import SignUp from './Components/Auth/SignUp';
 import AddListing from './Components/Home/AddNewListing';
+import ListingCard from './Components/Listings/ListingPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route exact path='/Login/' Component={Login} />
         <Route exact path='/' Component={Home} />
         <Route exact path='/addlisting' Component={AddListing} />
+        <Route exact path='/listings' Component={ListingCard} />
       </Routes>
     </Router>
   );
