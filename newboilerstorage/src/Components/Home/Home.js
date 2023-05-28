@@ -15,6 +15,7 @@ const navigation = [
   { name: "Login", href: "/Login" },
   { name: "SignUp", href: "/SignUp" },
   { name: "Contact", href: "mailto:emblifyai@gmail.com" },
+  { name: "Add New Listing", href: "/addlisting" }
 ];
 
 const features = [
@@ -522,12 +523,12 @@ BoilerStorage is  a peer-to-peer storage solution - call it an Airbnb for storag
                     style={{ zIndex: 999999 }}
                   >
                     <a
-  href="https://tally.so/r/nG6MbO"
+  href="/SignUp"
   style={{ backgroundColor: "#CEB888" }}
   className="inline-block rounded px-8 py-3 text-lg font-medium text-white transition hover:shadow-xl hover:-rotate-2 hover:scale-110 focus:outline-none focus:ring active:bg-rose-500"
 >
 
-                      Log In / Sign Up
+                      Sign Up Now
                     </a>
                   </div>
                   <ul className="text-sm pt-3 text-gray-500">

@@ -3,7 +3,7 @@ const { default: mongoose } = require("mongoose");
 function db() {
     const mongoose = require("mongoose");
 
-    mongoose.connect("mongodb://localhost:27017/BoilerAuth")
+    mongoose.connect("mongodb://localhost:27017")
     .then(() => {
         console.log("MongoDB connected");
     })

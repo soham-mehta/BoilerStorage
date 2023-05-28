@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom'
 import Login from './Components/Auth/Login';
 import SignUp from './Components/Auth/SignUp';
+import AddListing from './Components/Home/AddNewListing';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route exact path='/SignUp/' Component={SignUp} />
         <Route exact path='/Login/' Component={Login} />
         <Route exact path='/' Component={Home} />
+        <Route exact path='/addlisting' Component={AddListing} />
       </Routes>
     </Router>
   );
