@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import axios, * as others from 'axios';
+import Navbar from '../Home/NavBar';
 
 function SignUp() {
   const [email, setEmail] = useState('');
@@ -40,6 +41,8 @@ function SignUp() {
   };
 
   return (
+    <div>
+      <Navbar></Navbar>
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
         <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
@@ -111,6 +114,7 @@ function SignUp() {
               />
             </div>
           </div>
+          
           <div>
           <button
   type="submit"
@@ -123,6 +127,12 @@ function SignUp() {
           </div>
         </form>
       </div>
+    </div>
+    <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
+        <p className="mt-10 text-center text-xs leading-5 text-gray-500">
+          &copy; 2023 BoilerStorage. All rights reserved.
+        </p>
+      </footer>
     </div>
   );
 }
