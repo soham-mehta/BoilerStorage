@@ -1,4 +1,6 @@
 import ListingCard from './ListingCard';
+import FilterBar from './FilterBar';
+import NavBar from './../Home/NavBar';
 
 
 function ListingPage() {
@@ -6,6 +8,9 @@ function ListingPage() {
         
     }
     return (
+        <div>
+        <NavBar></NavBar>
+
         <div
         className="
             max-w-[2520px]
@@ -16,6 +21,10 @@ function ListingPage() {
             px-4
             "
         >
+            <FilterBar>
+
+            </FilterBar>
+            
             <div 
             className="
                 pt-24
@@ -46,6 +55,12 @@ function ListingPage() {
                 <ListingCard  />
                 <ListingCard  />
             </div>
+        </div>
+        <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
+        <p className="mt-10 text-center text-xs leading-5 text-gray-500">
+          &copy; 2023 BoilerStorage. All rights reserved.
+        </p>
+      </footer>
         </div>
     )
 }

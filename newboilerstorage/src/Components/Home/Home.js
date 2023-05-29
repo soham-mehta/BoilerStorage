@@ -8,6 +8,7 @@ import {
   TrophyIcon,
 } from "@heroicons/react/20/solid";
 
+
 const navigation = [
   { name: "Features", href: "#features" },
   { name: "Pricing", href: "#pricing" },
@@ -16,7 +17,7 @@ const navigation = [
   { name: "SignUp", href: "/SignUp" },
   { name: "Add New Listing", href: "/addlisting" },
   { name: "View Listings", href: "/ListingPage" },
-  { name: "Contact", href: "mailto:emblifyai@gmail.com" },
+  { name: "Contact", href: "mailto:mehta233@purdue.edu" },
 
 ];
 
@@ -90,6 +91,7 @@ const faqs = [
       "Email us by hitting the Contact button in the navigation bar. We'll get back to you as soon as possible.",
   },
 ];
+
 
 function FAQ() {
   return (
