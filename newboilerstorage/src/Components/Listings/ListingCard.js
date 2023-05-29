@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function ListingCard() {
     return (
-        <div className="col-span-1 cursor-pointer group">
+        <div className="col-span-1 cursor-pointer group gap-10">
           <div className="flex flex-col gap-2 w-full">
             <div 
               className="
@@ -17,7 +17,6 @@ function ListingCard() {
                 fill
                 className="
                   object-cover 
-                  h-full 
                   w-full 
                   group-hover:scale-90 
                   transition

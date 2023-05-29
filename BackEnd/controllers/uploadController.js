@@ -39,6 +39,7 @@ module.exports.uploadListing = async (req, res) => {
             }
         )
         //console.log(idArr)
+        console.log("Finished running")
         res.send("Success")
     } catch (err) {
         console.log(err)
