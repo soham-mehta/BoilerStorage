@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function ListingCard() {
+function ListingCard({ imgSrc, title, address, price }) {
     return (
         <div className="col-span-1 cursor-pointer group gap-10">
           <div className="flex flex-col gap-2 w-full">
@@ -21,19 +21,19 @@ function ListingCard() {
                   group-hover:scale-90 
                   transition
                 "
-                src="logo192.png"
+                src={imgSrc}
                 alt="Listing"
               />
             </div>
             <div className="font-semibold text-lg">
-              Purdue University
+              {title}
             </div>
             <div className="font-light text-neutral-500">
-              Address: ...
+              Address: {address}
             </div>
             <div className="flex flex-row items-center gap-1">
               <div className="font-semibold">
-                $ 100
+                $ {price}
               </div>
             </div>
             <button

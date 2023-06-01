@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 function FilterBar({onFilterChange}) {
   const [date, setDate] = useState('');
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState(0);
   const [location, setLocation] = useState('');
 
   const handleFilterChange = () => {

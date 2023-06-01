@@ -1,15 +1,29 @@
 import ListingCard from './ListingCard';
 import FilterBar from './FilterBar';
 import NavBar from './../Home/NavBar';
+import React, { useState } from 'react';
+
+import axios, * as others from 'axios';
 
 
 function ListingPage() {
-    const getListing = async () => {
-        
+    const [listing, setListing] = useState([]);
+
+
+    const onFilterChange = async ({ date, price, location }) => {
+        const url = `${process.env.REACT_APP_API_URL}/get/listings`
+        const res = await axios.post(url, 
+            {
+                date: date, price: price, location: location
+            })
+        console.log(res)
+        console.log(res.data.allDocs)
+        setListing(res.data.allDocs)
     }
+
     return (
         <div>
-        <NavBar></NavBar>
+        <NavBar />
 
         <div
         className="
@@ -21,10 +35,7 @@ function ListingPage() {
             px-4
             "
         >
-            <FilterBar>
-
-            </FilterBar>
-            
+            <FilterBar onFilterChange={onFilterChange} />
             <div 
             className="
                 pt-24
@@ -42,18 +53,14 @@ function ListingPage() {
                 2xl:gap-x-40 gap-y-30
             "
             >
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
-                <ListingCard  />
+                {listing.map((item) => (
+                    <ListingCard  
+                        price = {item.price}
+                        address = {item.address}
+                        title = "Purdue University"
+                        imgSrc={`data:${item.img[0][0]};base64,${item.img[0][1]}`}
+                    />
+                ))}
             </div>
         </div>
         <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">

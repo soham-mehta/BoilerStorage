@@ -5,6 +5,6 @@ const upload = listController.upload;
 
 //router.post("/upload/images", listController.postUploadImage)
 router.post("/upload/listings", upload.array('images', 5), listController.uploadListing);
-router.post("/get/listing", listController.retrieveListing);
+router.post("/get/listings", listController.retrieveMany);
 
 module.exports = router;
