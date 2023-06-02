@@ -13,6 +13,7 @@ function AddListing() {
   const [address, setAddress] = useState("");
   const [images, setImages] = useState([]);
   const [desc, setDesc] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -44,6 +45,7 @@ function AddListing() {
       formData.append('startDate', startDate);
       formData.append('endDate', endDate);
       formData.append('desc', desc);
+      formData.append('phoneNumber', phoneNumber)
       console.log(formData)
 
       const resImg = await axios.post(urlList, formData,
@@ -133,10 +135,13 @@ function AddListing() {
                 id="contact-information"
                 name="contact-information"
                 type="text"
-                autoComplete="email"
+                pattern="^(\+?1[-.\s]?)?(\()?\d{3}(\))?[-.\s]?\d{3}[-.\s]?\d{4}$|^\d{10}$"
                 required
+                autoComplete='tel'
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Phone Number"
+                value = {phoneNumber}
+                onChange={(event) => {setPhoneNumber(event.target.value)}}
               />
             </div>
             <div>

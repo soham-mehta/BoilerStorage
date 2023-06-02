@@ -29,6 +29,10 @@ const listingSchema = new mongoose.Schema({
     desc: {
         type: String,
         required: true
+    },
+    phoneNumber: {
+        type: String,
+        required: true
     }
 });
 

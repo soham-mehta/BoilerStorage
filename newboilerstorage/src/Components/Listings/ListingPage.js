@@ -1,36 +1,19 @@
 import ListingCard from './ListingCard';
 import FilterBar from './FilterBar';
 import NavBar from './../Home/NavBar';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import axios, * as others from 'axios';
 
 
-
-const listings = [
-    {
-      id: 1,
-      name: "John Doe",
-      contactNumber: "123-456-7890",
-      datesAvailable: ["2023-01-01", "2023-01-02"],
-      boxesLeft: 5,
-      photos: ["img1.jpg", "img2.jpg"]
-    },
-    {
-      id: 2,
-      name: "Jane Doe",
-      contactNumber: "234-567-8901",
-      datesAvailable: ["2023-02-01", "2023-02-02"],
-      boxesLeft: 3,
-      photos: ["img3.jpg", "img4.jpg"]
-    },
-    // Add more listings here...
-  ];
-  
-
-
 function ListingPage() {
     const [listing, setListing] = useState([]);
+
+    useEffect(() => {
+        const date = new Date()
+        console.log(date)
+        onFilterChange({date: date, price: 0, location: ""})
+    }, [])
 
 
     const onFilterChange = async ({ date, price, location }) => {
@@ -82,6 +65,7 @@ function ListingPage() {
                         address = {item.address}
                         title = "Purdue University"
                         imgSrc={`data:${item.img[0][0]};base64,${item.img[0][1]}`}
+                        id = {item.id}
                     />
                 ))}
             </div>

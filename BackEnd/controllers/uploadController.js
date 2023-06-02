@@ -2,24 +2,26 @@ const listingModel = require("../models/listingModel");
 const imageModel = require("../models/imageModel");
 const multer = require("multer");
 const mongoose = require('mongoose');
+const userModel = require("../models/userModel");
 
 const upload = multer({storage: multer.memoryStorage(), limits: { files: 5}})
 
 module.exports.uploadListing = async (req, res) => {
     try {
         //Upload listing
-        await listingModel.insertMany({
+        const result = await listingModel.insertMany({
             user: new mongoose.Types.ObjectId(req.body.user),
             price: req.body.price,
             address: req.body.address,
             startDate: new Date(req.body.startDate),
             endDate: new Date(req.body.endDate),
+            phoneNumber: req.body.phoneNumber,
             desc: req.body.desc
         })
 
         //Upload images
         const images = req.files
-        const idArr = []
+        let idArr = []
 
         const imageDocs = images.map((image) => {
             const cur = new imageModel();
@@ -29,10 +31,11 @@ module.exports.uploadListing = async (req, res) => {
             idArr.push(cur._id)
             return cur;
         })
+        //console.log(result)
         await imageModel.insertMany(imageDocs);
         await listingModel.updateOne(
             {
-                user: new mongoose.Types.ObjectId(req.body.user)
+                _id: result[0]._id
             },
             {
                 $set: 
@@ -42,7 +45,7 @@ module.exports.uploadListing = async (req, res) => {
             }
         )
         //console.log(idArr)
-        console.log("Finished running")
+        //console.log("Finished running")
         res.send("Success")
     } catch (err) {
         console.log(err)
@@ -63,16 +66,29 @@ module.exports.retrieveListing = async (req, res) => {
                 //console.log(curImg.data.toString('base64'))
                 arrBin.push([curImg.contentType, curImg.data.toString('base64')])
             }
-            console.log(arrBin)
-            res.send({price: match.price, img: arrBin})
-            console.log("Finished running")
+            const owner = await userModel.findById(match.user)
+            const startDate = new Date(match.startDate);
+            const endDate = new Date(match.endDate);
+            //console.log(arrBin)
+            const data = {
+                price: match.price,
+                img: arrBin,
+                address: match.address,
+                numBoxesLeft: match.desc,
+                startDate: `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}`, 
+                endDate: `${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`,
+                ownerName: `${owner.firstName} ${owner.lastName}`,
+                contactNumber: match.phoneNumber
+            }
+            res.send({listing: data})
+            //console.log("Finished running")
         }
     } catch (err) {
         console.log(err)
     }
 }
 
-module.exports.retrieveMany = async (req, res) => {
+module.exports.retrievePage = async (req, res) => {
     try {
         const { date, price, location } = req.body;
         const match = await listingModel.find(
@@ -86,18 +102,15 @@ module.exports.retrieveMany = async (req, res) => {
         } else {
             const allDocs = []
             for (const doc of match) {
-                console.log(doc)
+                //console.log(doc)
                 const arrBin = []
                 for (const image of doc.img) {
                     const curImg = await imageModel.findById(image);
-                    //console.log(curImg.data.toString('base64'))
                     arrBin.push([curImg.contentType, curImg.data.toString('base64')])
                 }
                 allDocs.push({price: doc.price, img: arrBin, id: doc.id, address: doc.address})
-                //console.log(allDocs)
-                //console.log("Finished running")
             }
-            console.log(allDocs)
+            //console.log(allDocs)
             res.send({allDocs})
         }
     } catch (err) {
