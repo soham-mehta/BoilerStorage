@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-function ListingCard() {
+function ListingCard({id}) {
     return (
         <div className="col-span-1 cursor-pointer group gap-10">
           <div className="flex flex-col gap-2 w-full">
@@ -36,6 +37,8 @@ function ListingCard() {
                 $ 100
               </div>
             </div>
+            <div>
+            <Link to={`/details/${id}`}>
             <button
                 type="submit"
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -43,6 +46,9 @@ function ListingCard() {
                 >
                 View Details
             </button>
+            </Link>
+            </div>
+            
           </div>
         </div>
        );
