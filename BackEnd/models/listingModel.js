@@ -17,6 +17,18 @@ const listingSchema = new mongoose.Schema({
     img: {
         type: Array,
         default: []
+    },
+    startDate: {
+        type: Date,
+        required: true
+    },
+    endDate: {
+        type: Date,
+        required: true
+    },
+    desc: {
+        type: String,
+        required: true
     }
 });
 

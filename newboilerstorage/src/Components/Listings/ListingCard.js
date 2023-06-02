@@ -22,19 +22,19 @@ function ListingCard({ id, imgSrc, title, address, price }) {
                   group-hover:scale-90 
                   transition
                 "
-                src="logo192.png"
+                src={imgSrc}
                 alt="Listing"
               />
             </div>
             <div className="font-semibold text-lg">
-              Purdue University
+              {title}
             </div>
             <div className="font-light text-neutral-500">
-              Address: ...
+              Address: {address}
             </div>
             <div className="flex flex-row items-center gap-1">
               <div className="font-semibold">
-                $ 100
+                $ {price}
               </div>
             </div>
             <div>
