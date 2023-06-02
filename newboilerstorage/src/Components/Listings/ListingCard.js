@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function ListingCard({id}) {
+function ListingCard({ id, imgSrc, title, address, price }) {
     return (
         <div className="col-span-1 cursor-pointer group gap-10">
           <div className="flex flex-col gap-2 w-full">
