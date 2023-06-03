@@ -8,6 +8,7 @@ const Navbar = () => {
         { name: "SignUp", href: "/SignUp" },
         { name: "Add New Listing", href: "/addlisting" },
         { name: "View Listings", href: "/ListingPage" },
+        
         { name: "Contact", href: "mailto:mehta233@purdue.edu" },
     ];
 

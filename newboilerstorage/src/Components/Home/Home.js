@@ -17,6 +17,7 @@ const navigation = [
   { name: "SignUp", href: "/SignUp" },
   { name: "Add New Listing", href: "/addlisting" },
   { name: "View Listings", href: "/ListingPage" },
+  { name: "Profile", href: "/ProfilePage" },
   { name: "Contact", href: "mailto:mehta233@purdue.edu" },
 
 ];

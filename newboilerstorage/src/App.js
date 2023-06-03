@@ -11,6 +11,7 @@ import SignUp from './Components/Auth/SignUp';
 import AddListing from './Components/Home/AddNewListing';
 import ListingCard from './Components/Listings/ListingCard';
 import ListingPage from './Components/Listings/ListingPage';
+import ProfilePage from './Components/Home/ProfilePage';
 import DetailsPage from "./Components/Listings/DetailsPage";
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
         <Route exact path='/addlisting/:id' Component={AddListing} />
         <Route exact path='/ListingCard' Component={ListingCard} />
         <Route exact path='/ListingPage' Component={ListingPage} />
+        <Route exact path='/ProfilePage' Component={ProfilePage} />
         <Route path="/details/:id" Component={DetailsPage} />
       </Routes>
     </Router>
