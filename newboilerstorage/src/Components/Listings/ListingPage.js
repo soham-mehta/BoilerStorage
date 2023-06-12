@@ -12,15 +12,15 @@ function ListingPage() {
     useEffect(() => {
         const date = new Date()
         console.log(date)
-        onFilterChange({date: date, price: 0, location: ""})
+        onFilterChange({date: date, price: 0, lat: 0, lon: 0})
     }, [])
 
 
-    const onFilterChange = async ({ date, price, location }) => {
+    const onFilterChange = async ({ date, price, lat, lon }) => {
         const url = `${process.env.REACT_APP_API_URL}/get/listings`
         const res = await axios.post(url, 
             {
-                date: date, price: price, location: location
+                date: date, price: price, lat: lat, lon: lon
             })
         console.log(res)
         console.log(res.data.allDocs)
@@ -66,6 +66,7 @@ function ListingPage() {
                         title = "Purdue University"
                         imgSrc={`data:${item.img[0][0]};base64,${item.img[0][1]}`}
                         id = {item.id}
+                        dist = {item.dist}
                     />
                 ))}
             </div>

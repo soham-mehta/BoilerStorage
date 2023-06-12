@@ -20,12 +20,11 @@ function App() {
       <Routes>
         <Route exact path='/SignUp/' Component={SignUp} />
         <Route exact path='/Login/' Component={Login} />
-        <Route exact path='/' Component={Home} />
-        <Route exact path='/addlisting' Component={AddListing} />
+        <Route exact path='/' element={<Home loggedIn={false}/>} />
+        <Route exact path='/home/:id' element={<Home loggedIn={true}/>} />
         <Route exact path='/addlisting/:id' Component={AddListing} />
-        <Route exact path='/ListingCard' Component={ListingCard} />
         <Route exact path='/ListingPage' Component={ListingPage} />
-        <Route exact path='/ProfilePage' Component={ProfilePage} />
+        <Route exact path='/profile/:id' element={<ProfilePage />} />
         <Route path="/details/:id" Component={DetailsPage} />
       </Routes>
     </Router>

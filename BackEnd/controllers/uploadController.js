@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const userModel = require("../models/userModel");
 
 const upload = multer({storage: multer.memoryStorage(), limits: { files: 5}})
+const axios = require("axios")
+module.exports.upload = upload;
 
 module.exports.uploadListing = async (req, res) => {
     try {
@@ -16,7 +18,9 @@ module.exports.uploadListing = async (req, res) => {
             startDate: new Date(req.body.startDate),
             endDate: new Date(req.body.endDate),
             phoneNumber: req.body.phoneNumber,
-            desc: req.body.desc
+            desc: req.body.desc,
+            lat: req.body.lat,
+            lon: req.body.lon
         })
 
         //Upload images
@@ -52,7 +56,6 @@ module.exports.uploadListing = async (req, res) => {
     }
 }
 
-module.exports.upload = upload;
 
 module.exports.retrieveListing = async (req, res) => {
     try {
@@ -63,13 +66,11 @@ module.exports.retrieveListing = async (req, res) => {
             const arrBin = []
             for (const image of match.img) {
                 const curImg = await imageModel.findById(image);
-                //console.log(curImg.data.toString('base64'))
                 arrBin.push([curImg.contentType, curImg.data.toString('base64')])
             }
             const owner = await userModel.findById(match.user)
             const startDate = new Date(match.startDate);
             const endDate = new Date(match.endDate);
-            //console.log(arrBin)
             const data = {
                 price: match.price,
                 img: arrBin,
@@ -78,7 +79,9 @@ module.exports.retrieveListing = async (req, res) => {
                 startDate: `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}`, 
                 endDate: `${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`,
                 ownerName: `${owner.firstName} ${owner.lastName}`,
-                contactNumber: match.phoneNumber
+                contactNumber: match.phoneNumber,
+                lon: match.lon,
+                lat: match.lat
             }
             res.send({listing: data})
             //console.log("Finished running")
@@ -88,9 +91,15 @@ module.exports.retrieveListing = async (req, res) => {
     }
 }
 
+const dist = async (origin, dest) => {
+    const url = `https://api.tomtom.com/routing/1/calculateRoute/${origin.lat},${origin.lon}:${dest.lat},${dest.lon}/json?instructionsType=text&language=en-US&vehicleHeading=90&sectionType=traffic&report=effectiveSettings&routeType=eco&traffic=true&avoid=unpavedRoads&travelMode=car&vehicleMaxSpeed=120&vehicleCommercial=false&vehicleEngineType=combustion&key=mPKAe08o98VphQ0zNO2fG1l6eUPRVpTh`
+    const res = await axios.get(url)
+    return res.data.routes[0].summary.lengthInMeters;
+}
+
 module.exports.retrievePage = async (req, res) => {
     try {
-        const { date, price, location } = req.body;
+        const { date, price, lat, lon } = req.body;
         const match = await listingModel.find(
             {
                 price: { $gte: price},
@@ -102,13 +111,13 @@ module.exports.retrievePage = async (req, res) => {
         } else {
             const allDocs = []
             for (const doc of match) {
-                //console.log(doc)
+                //  console.log(doc)
                 const arrBin = []
                 for (const image of doc.img) {
                     const curImg = await imageModel.findById(image);
                     arrBin.push([curImg.contentType, curImg.data.toString('base64')])
                 }
-                allDocs.push({price: doc.price, img: arrBin, id: doc.id, address: doc.address})
+                allDocs.push({price: doc.price, img: arrBin, id: doc.id, address: doc.address, dist: await dist({lat, lon}, {lat: doc.lat, lon: doc.lon})})
             }
             //console.log(allDocs)
             res.send({allDocs})

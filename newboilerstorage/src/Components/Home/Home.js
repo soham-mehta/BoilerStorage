@@ -1,24 +1,24 @@
 import { useState } from "react";
 import { Dialog, Disclosure } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon, CheckIcon, MinusSmallIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon, CheckIcon, MinusSmallIcon, PlusSmallIcon } from "@heroicons/react/24/outline";
 
 import {
   FaceSmileIcon,
   GlobeAmericasIcon,
   TrophyIcon,
 } from "@heroicons/react/20/solid";
+import { useParams, useLocation, Link } from "react-router-dom";
 
 
 const navigation = [
-  { name: "Features", href: "#features" },
-  { name: "Pricing", href: "#pricing" },
-  { name: "FAQ", href: "#faq" },
-  { name: "Login", href: "/Login" },
-  { name: "SignUp", href: "/SignUp" },
-  { name: "Add New Listing", href: "/addlisting" },
-  { name: "View Listings", href: "/ListingPage" },
-  { name: "Profile", href: "/ProfilePage" },
-  { name: "Contact", href: "mailto:mehta233@purdue.edu" },
+  { name: "Features", href: "#features", home: true, host: false, loggedIn: true },
+  { name: "Pricing", href: "#pricing", home: true, host: false, loggedIn: true },
+  { name: "FAQ", href: "#faq", home: true, host: false, loggedIn: true },
+  { name: "Add New Listing", href: "/addlisting", home: false, host: true, loggedIn: true},
+  { name: "View Listings", href: "/ListingPage", home: true, host: false, loggedIn: true },
+  { name: "Contact", href: "mailto:mehta233@purdue.edu", home: true, host: false, loggedIn: true },
+  { name: "Login", href: "/Login", home: true, host: false, loggedIn: false },
+  { name: "SignUp", href: "/SignUp", home: true, host: false, loggedIn: false },
 
 ];
 
@@ -148,7 +148,7 @@ function Pricing() {
     <div className="isolate overflow-hidden bg-gray-900" id="pricing">
       <div className="mx-auto max-w-7xl px-6 pb-96 pt-24 text-center sm:pt-32 lg:px-8">
         <div className="mx-auto max-w-4xl">
-         
+
           <p className="mt-2 text-4xl font-bold tracking-tight text-white sm:text-5xl">
             For Students,{" "}
             <br className="hidden sm:inline lg:hidden" />
@@ -229,17 +229,17 @@ function Pricing() {
               ))}
               <div className="flex flex-col items-start gap-x-8 gap-y-6 rounded-3xl p-8 ring-1 ring-gray-900/10 sm:gap-y-10 sm:p-10 lg:col-span-2 lg:flex-row lg:items-center">
                 <div className="lg:min-w-0 lg:flex-1">
-                <h3 
-  style={{ color: "#CEB888" }}
-  className="text-lg font-semibold leading-8 tracking-tight"
->
-  No Subletters ? Have extra space ?
-</h3>
+                  <h3
+                    style={{ color: "#CEB888" }}
+                    className="text-lg font-semibold leading-8 tracking-tight"
+                  >
+                    No Subletters ? Have extra space ?
+                  </h3>
 
-          
+
                   <p className="mt-1 text-base leading-7 text-gray-600">
-                
-                  Sign up to be a host on Boxlet Storage and make money off your empty space. You can make hundreds of dollars - just for letting classmates’ boxes sit.
+
+                    Sign up to be a host on Boxlet Storage and make money off your empty space. You can make hundreds of dollars - just for letting classmates’ boxes sit.
                   </p>
                 </div>
                 <a
@@ -262,20 +262,20 @@ function Features() {
     <div className="bg-white py-24 sm:py-32" id="features">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:text-center">
-        <h2 
-  style={{ color: "#CEB888" }}
-  className="text-base font-semibold leading-7"
->
-  How it works ?
-</h2>
+          <h2
+            style={{ color: "#CEB888" }}
+            className="text-base font-semibold leading-7"
+          >
+            How it works ?
+          </h2>
 
           <p style={{ wordSpacing: "0.25em" }} className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl whitespace-nowrap">Share space. Store Belongings. Earn Money.</p>
 
 
 
           <p className="mt-6 text-lg leading-8f text-gray-600">
-          Ensuring the smoothest, cheapest, most reliable experience possible.
-            
+            Ensuring the smoothest, cheapest, most reliable experience possible.
+
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
@@ -378,7 +378,7 @@ function PhotoGrid() {
   );
 }
 
-function Hero() {
+function Hero({ loggedIn, id }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -387,21 +387,27 @@ function Hero() {
         <nav
           className="mx-auto flex max-w-7xl items-center justify-center p-6 lg:px-8"
           aria-label="Global"
-        > 
+        >
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="text-sm font-semibold leading-6 text-gray-900"
-                >
-                  {item.name}
-                </a>
-              ))}
+              (item.home && !loggedIn) || (loggedIn && item.loggedIn) ?
+(              <a
+              key={item.name}
+              href={item.href}
+              className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                {item.name}
+              </a>) : <></>
+              
+            ))}
+             {loggedIn ? 
+             (
+              <Link to = {`/profile/${id}`} className="text-sm font-semibold leading-6 text-gray-900">Profile</Link>
+              ): <></>}
           </div>
-          
+
         </nav>
-        
+
         <Dialog
           as="div"
           className="lg:hidden"
@@ -493,36 +499,36 @@ function Hero() {
             <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-                <h1 className="text-4xl font-bold tracking-tight text-black sm:text-6xl">
-      Introducing
-  </h1>
-  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl" style={{color: '#CEB888'}}>
-      BoilerStorage
-  </h1>
+                  <h1 className="text-4xl font-bold tracking-tight text-black sm:text-6xl">
+                    Introducing
+                  </h1>
+                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl" style={{ color: '#CEB888' }}>
+                    BoilerStorage
+                  </h1>
 
                   <p className="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
-                  Leaving for summer and need storage space?
+                    Leaving for summer and need storage space?
 
-BoilerStorage is  a peer-to-peer storage solution - call it an Airbnb for storage. In a bid to reduce the costs of housing, BoilerStorage is a marketplace that matches people who need storage with folks who have extra space.
+                    BoilerStorage is  a peer-to-peer storage solution - call it an Airbnb for storage. In a bid to reduce the costs of housing, BoilerStorage is a marketplace that matches people who need storage with folks who have extra space.
                   </p>
                   <div
                     className="mt-10 flex items-center gap-x-6"
                     style={{ zIndex: 999999 }}
                   >
                     <a
-  href="/SignUp"
-  style={{ backgroundColor: "#CEB888" }}
-  className="inline-block rounded px-8 py-3 text-lg font-medium text-white transition hover:shadow-xl hover:-rotate-2 hover:scale-110 focus:outline-none focus:ring active:bg-rose-500"
->
+                      href="/SignUp"
+                      style={{ backgroundColor: "#CEB888" }}
+                      className="inline-block rounded px-8 py-3 text-lg font-medium text-white transition hover:shadow-xl hover:-rotate-2 hover:scale-110 focus:outline-none focus:ring active:bg-rose-500"
+                    >
 
                       Sign Up Now
                     </a>
                   </div>
                   <ul className="text-sm pt-3 text-gray-500">
-    <li>Log In / Sign Up is required to add a new listing as a Host or to book a listing as a Guest</li>
-    <br></br>
-    <li>Available listings may be viewed without logging in</li>
-</ul>
+                    <li>Log In / Sign Up is required to add a new listing as a Host or to book a listing as a Guest</li>
+                    <br></br>
+                    <li>Available listings may be viewed without logging in</li>
+                  </ul>
                   <br></br>
                   <br></br>
                   <br></br>
@@ -553,6 +559,7 @@ BoilerStorage is  a peer-to-peer storage solution - call it an Airbnb for storag
                     <div className="relative">
                       <img
                         src={("./images/7.gif")}
+                        alt=""
                         className="w-full rounded-xl bg-gray-900/5 object-cover shadow-lg"
                       />
                       <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-gray-900/10" />
@@ -586,20 +593,25 @@ BoilerStorage is  a peer-to-peer storage solution - call it an Airbnb for storag
   );
 }
 
-function Home() {
+function Home({loggedIn}) {
+  /*
+  
+  */
+  const { id } = useParams();
+
   return (
     <>
-      <Hero></Hero>
-      <PhotoGrid></PhotoGrid>
-      <Features></Features>
-      <Pricing></Pricing>
-      <FAQ></FAQ>
-      {/* <Form></Form> */}
-      <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
-        <p className="mt-10 text-center text-xs leading-5 text-gray-500">
-          &copy; 2023 BoilerStorage. All rights reserved.
-        </p>
-      </footer>
+    <Hero loggedIn={loggedIn} id = {id}></Hero>
+    <PhotoGrid></PhotoGrid>
+    <Features></Features>
+    <Pricing></Pricing>
+    <FAQ></FAQ>
+    
+    <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
+      <p className="mt-10 text-center text-xs leading-5 text-gray-500">
+        &copy; 2023 BoilerStorage. All rights reserved.
+      </p>
+    </footer>
     </>
   );
 }
