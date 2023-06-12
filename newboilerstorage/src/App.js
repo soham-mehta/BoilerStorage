@@ -21,7 +21,7 @@ function App() {
         <Route exact path='/SignUp/' Component={SignUp} />
         <Route exact path='/Login/' Component={Login} />
         <Route exact path='/' element={<Home loggedIn={false}/>} />
-        <Route exact path='/home/:id' element={<Home loggedIn={true}/>} />
+        <Route exact path='/home/:id/' element={<Home loggedIn={true}/>} />
         <Route exact path='/addlisting/:id' Component={AddListing} />
         <Route exact path='/ListingPage' Component={ListingPage} />
         <Route exact path='/profile/:id' element={<ProfilePage />} />

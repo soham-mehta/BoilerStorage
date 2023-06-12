@@ -10,15 +10,15 @@ module.exports.getLogin = async (req, res) => {
     }
 }
 module.exports.postSignUp = async (req, res) => {
-    const { email, password, firstName, lastName } = req.body
+    const { email, password, firstName, lastName, isHost } = req.body;
     try {
         const match = await userModel.findOne({email: email})
 
         if (match != null) {
             res.send({duplicate: true})
         } else {
-            await userModel.insertMany([{email, password, firstName, lastName}])
-            res.send({duplicate: false})
+            const ele = await userModel.insertMany([{email, password, firstName, lastName, isHost}])
+            res.send({duplicate: false, id: ele[0]._id})
         }
     } catch (err) {
         console.log(err)
@@ -32,7 +32,7 @@ module.exports.postLogin = async (req, res) => {
             res.send({success: false, notExist: true})
         }
         else if (match.password === req.body.password) {
-            res.send({success: true, notExist: false, details: {firstName: match.firstName, lastName: match.lastName, id: match._id, email: match.email}})
+            res.send({success: true, notExist: false, details: {firstName: match.firstName, lastName: match.lastName, id: match._id, email: match.email, isHost: match.isHost}})
         } else {
             res.send({success: false, notExist: false})
         }

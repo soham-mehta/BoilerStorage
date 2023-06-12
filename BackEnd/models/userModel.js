@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema({
     },
     contactNumber: {
         type: String
+    },
+    isHost: {
+        type: Boolean,
+        required: true
     }
 });
 

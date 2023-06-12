@@ -7,14 +7,13 @@ import {
   GlobeAmericasIcon,
   TrophyIcon,
 } from "@heroicons/react/20/solid";
-import { useParams, useLocation, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 
 
 const navigation = [
   { name: "Features", href: "#features", home: true, host: false, loggedIn: true },
   { name: "Pricing", href: "#pricing", home: true, host: false, loggedIn: true },
   { name: "FAQ", href: "#faq", home: true, host: false, loggedIn: true },
-  { name: "Add New Listing", href: "/addlisting", home: false, host: true, loggedIn: true},
   { name: "View Listings", href: "/ListingPage", home: true, host: false, loggedIn: true },
   { name: "Contact", href: "mailto:mehta233@purdue.edu", home: true, host: false, loggedIn: true },
   { name: "Login", href: "/Login", home: true, host: false, loggedIn: false },
@@ -378,7 +377,7 @@ function PhotoGrid() {
   );
 }
 
-function Hero({ loggedIn, id }) {
+function Hero({ loggedIn, id, isHost }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -391,19 +390,23 @@ function Hero({ loggedIn, id }) {
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               (item.home && !loggedIn) || (loggedIn && item.loggedIn) ?
-(              <a
-              key={item.name}
-              href={item.href}
-              className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                {item.name}
-              </a>) : <></>
-              
+                (<a
+                  key={item.name}
+                  href={item.href}
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                >
+                  {item.name}
+                </a>) : <></>
+
             ))}
-             {loggedIn ? 
-             (
-              <Link to = {`/profile/${id}`} className="text-sm font-semibold leading-6 text-gray-900">Profile</Link>
-              ): <></>}
+            {isHost ?
+              (
+                <Link to={`/addlisting/${id}`} className="text-sm font-semibold leading-6 text-gray-900">Add New Listing</Link>
+              ) : <></>}
+            {loggedIn ?
+              (
+                <Link to={`/profile/${id}`} className="text-sm font-semibold leading-6 text-gray-900">Profile</Link>
+              ) : <></>}
           </div>
 
         </nav>
@@ -593,25 +596,26 @@ function Hero({ loggedIn, id }) {
   );
 }
 
-function Home({loggedIn}) {
+function Home({ loggedIn }) {
   /*
   
   */
   const { id } = useParams();
+  const { state } = useLocation();
 
   return (
     <>
-    <Hero loggedIn={loggedIn} id = {id}></Hero>
-    <PhotoGrid></PhotoGrid>
-    <Features></Features>
-    <Pricing></Pricing>
-    <FAQ></FAQ>
-    
-    <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
-      <p className="mt-10 text-center text-xs leading-5 text-gray-500">
-        &copy; 2023 BoilerStorage. All rights reserved.
-      </p>
-    </footer>
+      <Hero loggedIn={loggedIn} id={id} isHost={(state) ? (state.isHost) : false}></Hero>
+      <PhotoGrid></PhotoGrid>
+      <Features></Features>
+      <Pricing></Pricing>
+      <FAQ></FAQ>
+
+      <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
+        <p className="mt-10 text-center text-xs leading-5 text-gray-500">
+          &copy; 2023 BoilerStorage. All rights reserved.
+        </p>
+      </footer>
     </>
   );
 }

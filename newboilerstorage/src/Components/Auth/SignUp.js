@@ -3,11 +3,15 @@ import React, { useState } from 'react';
 import axios, * as others from 'axios';
 import Navbar from '../Home/NavBar';
 
+import { useNavigate } from 'react-router-dom';
+
 function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [isHost, setRole] = useState(true);
+  const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -29,11 +33,12 @@ function SignUp() {
     event.preventDefault();
     try {
       const url = `${process.env.REACT_APP_API_URL}/signup`
-      const res = await axios.post(url, { email: email, password: password , firstName, lastName})
+      const res = await axios.post(url, { email: email, password: password , firstName, lastName, isHost})
       if (res.data.duplicate) {
         alert("This email has already been registered with an account!")
       } else {
         alert("Successfully signed up!")
+        navigate(`/home/${res.data.id}`, { state: {isHost}})
       }
     } catch (err) {
       console.log(err);
@@ -107,11 +112,27 @@ function SignUp() {
                 name="lastName"
                 type="text"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Last Name"
                 value = {lastName}
                 onChange = {handleLastNameChange}
               />
+            </div>
+            <div>
+              <label htmlFor="lastName" className="sr-only">
+                Last Name
+              </label>
+              <select 
+                id="dropdown" 
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                onChange={(event) => setRole(event.target.value)}
+                required
+              >
+                <option value="">-- Select --</option>
+                <option value={true}>Host</option>
+                <option value={false}>Guest</option>
+              </select>
+
             </div>
           </div>
           

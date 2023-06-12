@@ -69,6 +69,7 @@ function AddListing() {
       searchRef.current.appendChild(searchBoxHTML);
     }
     dist()
+    return () => {searchRef.current = null}
   }, []);
 
   const handleImageUpload = (event) => {
@@ -231,11 +232,6 @@ function AddListing() {
                 style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
               >
                 Add Listing
-              </button>
-              <button
-                onClick={dist}
-              >
-                Trial
               </button>
             </div>
           </form>
