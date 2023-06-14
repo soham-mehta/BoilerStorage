@@ -25,14 +25,14 @@ const features = [
   {
     name: "Find a Host",
     description:
-      "Our tool seamlessly lets you choose a host that is closest to you.",
+      "Our intuitive tool allows you to swiftly select a host located conveniently close to you.",
     href: "#",
     icon: FaceSmileIcon,
   },
   {
     name: "Set Drop Off",
     description:
-      "Decide your drop-off time, then leave items with your host.",
+      "Set your preferred drop-off time, and leave your items securely with your host.",
     href: "#",
     icon: GlobeAmericasIcon,
   },
@@ -156,7 +156,7 @@ function Pricing() {
         </div>
         <div className="relative mt-6">
           <p className="mx-auto max-w-2xl text-lg leading-8 text-white/60">
-            As students ourselves, we found Summer Storage ridiculously expensive. We wanted a solution that saved on time and money. We thought of a way that uses avaliable resources to holistically reduce the overall costs of housing.
+            As students ourselves, we found Summer Storage ridiculously expensive. Time and money were always at a premium. That's why we envisioned a solution that harnesses available resources to effectively cut down overall housing expenses.
           </p>
           <svg
             viewBox="0 0 1208 1024"
@@ -228,17 +228,16 @@ function Pricing() {
               ))}
               <div className="flex flex-col items-start gap-x-8 gap-y-6 rounded-3xl p-8 ring-1 ring-gray-900/10 sm:gap-y-10 sm:p-10 lg:col-span-2 lg:flex-row lg:items-center">
                 <div className="lg:min-w-0 lg:flex-1">
-                  <h3
-                    style={{ color: "#CEB888" }}
-                    className="text-lg font-semibold leading-8 tracking-tight"
-                  >
-                    No Subletters ? Have extra space ?
-                  </h3>
-
+                <h3 
+  style={{ color: "#CEB888" }}
+  className="text-lg font-semibold leading-8 tracking-tight"
+>
+Have Extra Space? No Subletters?
+</h3>
 
                   <p className="mt-1 text-base leading-7 text-gray-600">
-
-                    Sign up to be a host on Boxlet Storage and make money off your empty space. You can make hundreds of dollars - just for letting classmates’ boxes sit.
+                
+                  Why not monetize your unused space? Register as a host on BoilerStorage and earn money from your empty corners. Let the boxes of your classmates rest in your space, and you could be pocketing hundreds of dollars.
                   </p>
                 </div>
                 <a
@@ -273,8 +272,8 @@ function Features() {
 
 
           <p className="mt-6 text-lg leading-8f text-gray-600">
-            Ensuring the smoothest, cheapest, most reliable experience possible.
-
+          We're committed to providing a hassle-free, affordable, and dependable service.
+            
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
@@ -502,17 +501,15 @@ function Hero({ loggedIn, id, isHost }) {
             <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-                  <h1 className="text-4xl font-bold tracking-tight text-black sm:text-6xl">
-                    Introducing
-                  </h1>
-                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl" style={{ color: '#CEB888' }}>
-                    BoilerStorage
-                  </h1>
+                <h1 className="text-4xl font-bold tracking-tight text-black sm:text-6xl">
+      Welcome to
+  </h1>
+  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl" style={{color: '#CEB888'}}>
+      BoilerStorage
+  </h1>
 
                   <p className="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
-                    Leaving for summer and need storage space?
-
-                    BoilerStorage is  a peer-to-peer storage solution - call it an Airbnb for storage. In a bid to reduce the costs of housing, BoilerStorage is a marketplace that matches people who need storage with folks who have extra space.
+                  Need a place to stash your stuff over the summer break? Welcome to BoilerStorage - we're the Airbnb of storage solutions. Our mission? Transform the cost dynamics of housing through a marketplace that efficiently connects those seeking storage with those who have extra room to spare.
                   </p>
                   <div
                     className="mt-10 flex items-center gap-x-6"
@@ -528,10 +525,8 @@ function Hero({ loggedIn, id, isHost }) {
                     </a>
                   </div>
                   <ul className="text-sm pt-3 text-gray-500">
-                    <li>Log In / Sign Up is required to add a new listing as a Host or to book a listing as a Guest</li>
-                    <br></br>
-                    <li>Available listings may be viewed without logging in</li>
-                  </ul>
+                  To start your journey as a Host or to book a space as a Guest, sign up or log in. Browsing our array of available listings is available even without logging in.
+</ul>
                   <br></br>
                   <br></br>
                   <br></br>

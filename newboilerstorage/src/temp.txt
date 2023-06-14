@@ -1,0 +1,432 @@
+import React, { useState } from 'react';
+import axios, * as others from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import DatePicker from "react-datepicker";
+import 'react-datepicker/dist/react-datepicker.css';
+import Navbar from './NavBar';
+
+
+
+function AddListing() {
+  const { id } = useParams();
+  const [price, setPrice] = useState(0);
+  const [address, setAddress] = useState("");
+  const [images, setImages] = useState([]);
+  const [desc, setDesc] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  const handleImageUpload = (event) => {
+    setImages(Array.from(event.target.files))
+  }
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    console.log(id)
+    try {
+      const urlList = `${process.env.REACT_APP_API_URL}/upload/listings`
+      const formData = new FormData();
+      images.forEach((image) => {
+        formData.append('images', image);
+      });
+      formData.append('user', id);
+      formData.append('price', price);
+      formData.append('address', address);
+      formData.append('startDate', startDate);
+      formData.append('endDate', endDate);
+      formData.append('desc', desc);
+      formData.append('phoneNumber', phoneNumber)
+      console.log(formData)
+
+      const resImg = await axios.post(urlList, formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        }).then(console.log("Finished uploading..."));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
+  return (
+    <div>
+    <Navbar></Navbar>
+  
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
+        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
+          Add a new listing
+        </h2>
+        <form className="mt-8 space-y-6" onSubmit={onSubmit}>
+          <input type="hidden" name="remember" defaultValue="true" />
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="location" className="sr-only">
+                Location
+              </label>
+              <input
+                id="location"
+                name="location"
+                type="text"
+                autoComplete="street-address"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Location - enter full address"
+                value={address}
+                onChange={(event) => { setAddress(event.target.value) }}
+              />
+            </div>
+            <div>
+              <label htmlFor="available-dates" className="sr-only">
+                Available dates
+              </label>
+              <DatePicker
+                selected={startDate}
+                onChange={(handleStartDateChange)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText="Starting Available Date"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              />
+              <DatePicker
+                selected={endDate}
+                onChange={(handleEndDateChange)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                placeholderText="Last Available Date"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              />
+            </div>
+            <div>
+              <label htmlFor="storage-space" className="sr-only">
+                Storage space
+              </label>
+              <input
+                id="storage-space"
+                name="storage-space"
+                type="text"
+                value = {desc}
+                onChange = { (event) => {setDesc(event.target.value)}}
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="approximate number of boxes - 2 x 1.33 x 1.5 feet"
+              />
+            </div>
+            <div>
+              <label htmlFor="contact-information" className="sr-only">
+                Contact information
+              </label>
+              <input
+                id="contact-information"
+                name="contact-information"
+                type="text"
+                pattern="^(\+?1[-.\s]?)?(\()?\d{3}(\))?[-.\s]?\d{3}[-.\s]?\d{4}$|^\d{10}$"
+                required
+                autoComplete='tel'
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Phone Number"
+                value = {phoneNumber}
+                onChange={(event) => {setPhoneNumber(event.target.value)}}
+              />
+            </div>
+            <div>
+              <label htmlFor="price" className="sr-only">
+                Price
+              </label>
+              <input
+                id="price"
+                name="price"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Price per box"
+                value={price}
+                onChange={(event) => setPrice(event.target.value)}
+              />
+            </div>
+            <div>
+              <label htmlFor="images" className="sr-only">
+                Images
+              </label>
+              <input
+                id="images"
+                name="images"
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                onChange = {handleImageUpload}
+                multiple
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <button
+              type="submit"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
+            >
+              Add Listing
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
+        <p className="mt-10 text-center text-xs leading-5 text-gray-500">
+          &copy; 2023 BoilerStorage. All rights reserved.
+        </p>
+      </footer>
+    </div>
+  );
+}
+
+export default AddListing;
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React from 'react';
+import { useLocation } from 'react-router-dom';
+
+
+function PreviewListing() {
+  const location = useLocation();
+  const history = location.state;
+
+  const { price, address, images, desc, phoneNumber, startDate, endDate } = location.state;
+
+  const handleConfirm = async () => {
+    try {
+      // Call to backend API to save the listing
+      // Pass all required data to API
+      // After success, navigate to another page
+
+      console.log("List confirmed");
+      history.push('/'); // navigate to another page, change as needed
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  
+}
+
+export default PreviewListing;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState } from 'react';
+
+
+const images = Array.from({ length: 10 }, (_, i) => `./images/${i + 1}_.png`);
+
+function PhotoGrid() {
+  return (
+    <div className="pt-4 space-y-4">
+      {images.map((src, index) => (
+        <img
+          key={index}
+          className="h-auto max-w-full rounded-lg shadow-lg"
+          src={src}
+          alt={`img-${index}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+function Hero() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  return (
+    <div className="relative pt-16 pb-32 flex content-center items-center justify-center min-h-screen-75">
+      <div className="absolute top-0 w-full h-full bg-center bg-cover">
+        <svg
+          className="absolute inset-x-0 top-0 -z-10 h-[64rem] w-full stroke-gray-200 [mask-image:radial-gradient(32rem_32rem_at_center,white,transparent)]"
+          aria-hidden="true"
+        >
+          <defs>
+            <pattern
+              id="1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84"
+              width={200}
+              height={200}
+              x="50%"
+              y={-1}
+              patternUnits="userSpaceOnUse"
+            >
+              <path d="M.5 200V.5H200" fill="none" />
+            </pattern>
+          </defs>
+          <svg x="50%" y={-1} className="overflow-visible fill-gray-50">
+            <path
+              d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z"
+              strokeWidth={0}
+            />
+          </svg>
+          <rect
+            width="100%"
+            height="100%"
+            strokeWidth={0}
+            fill="url(#1f932ae7-37de-4c0a-a8b0-a6e3b4d44b84)"
+          />
+        </svg>
+      </div>
+      <div className="container relative mx-auto">
+        <div className="items-center flex flex-wrap">
+          <div className="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
+            <div>
+              <h1 className="text-4xl font-semibold leading-normal text-white mb-2">
+                BoilerStorage
+              </h1>
+              <div className="w-12 h-1 bg-blue-500 rounded mt-4 mb-4"></div>
+              <h4 className="text-lg font-normal leading-normal mt-2 mb-4 text-white">
+                Planning for summer and need storage space? BoilerStorage, a 
+                peer-to-peer storage solution, is here to help. We function as 
+                an Airbnb for storage, connecting those who need storage with 
+                people who have extra space.
+              </h4>
+            </div>
+            <div className="mt-10">
+              <a
+                href="/SignUp"
+                className="bg-yellow-500 text-white font-bold py-2 px-4 rounded"
+              >
+                Get Started
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-24 fade-in-up">
+        <svg
+          className="absolute bottom-0 overflow-hidden"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="none"
+          version="1.1"
+          viewBox="0 0 2560 100"
+          x="0"
+          y="0"
+        >
+          <polygon points="2560 0 2560 100 0 100"></polygon>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function Home() {
+  return (
+    <div>
+      <Hero />
+      <PhotoGrid />
+      <Features />
+      <Pricing />
+      <FAQ />
+      <footer className="bg-white">
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:flex md:items-center md:justify-between lg:px-8">
+          <div className="mt-8 md:mt-0 md:order-1">
+            <p className="text-center text-base text-gray-400">
+              &copy; {new Date().getFullYear()} BoilerStorage, Inc. All rights
+              reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default Home;
+
+
+
+
+
+const location = useLocation();
+  const navigate = useNavigate();
+  const mapElement = useRef();
+  
+  const { price = "", address = "", images = [], desc = "", phoneNumber = "", startDate = "", endDate = "", lon = 0, lat = 0 } = location.state || {};
+    console.log(location)

@@ -40,7 +40,7 @@ const listingSchema = new mongoose.Schema({
     },
     phoneNumber: {
         type: String,
-        required: true
+        
     }
 });
 

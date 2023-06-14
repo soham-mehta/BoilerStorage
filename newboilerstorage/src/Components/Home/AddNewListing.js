@@ -1,25 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
-import axios, * as others from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useRef,useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
+import { Link } from 'react-router-dom';
+
 import Navbar from './NavBar';
 import tt from "@tomtom-international/web-sdk-services";
 import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox'
 
 
-
 function AddListing() {
-  const { id } = useParams();
+  const {id} = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [price, setPrice] = useState(0);
   const [address, setAddress] = useState("");
   const [images, setImages] = useState([]);
-  const [desc, setDesc] = useState("")
+  const [desc, setDesc] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [position, setPosition] = useState({lng: 0, lat: 0});
 
   const searchRef = useRef(null);
 
@@ -42,14 +46,12 @@ function AddListing() {
 
   const selectRes = (results) => {
     setAddress(results.data.result.address.freeformAddress)
+    setPosition({...position, lng: results.data.result.position.lng, lat: results.data.result.position.lat})
+    console.log(results.data.result.position)
     console.log(results.data.result.address.freeformAddress)
   }
 
-  const dist = async () => {
-    const url = `https://api.tomtom.com/routing/1/calculateRoute/52.50931,13.42936:52.50274,13.43872/json?instructionsType=text&language=en-US&vehicleHeading=90&sectionType=traffic&report=effectiveSettings&routeType=eco&traffic=true&avoid=unpavedRoads&travelMode=car&vehicleMaxSpeed=120&vehicleCommercial=false&vehicleEngineType=combustion&key=${process.env.REACT_APP_TOM_TOM_KEY}`
-    const res = await axios.get(url)
-    console.log(res)
-  }
+  
 
   const ttSearchBox = new SearchBox(tt.services, options);
   ttSearchBox.on(
@@ -68,14 +70,33 @@ function AddListing() {
     if (searchRef.current) {
       searchRef.current.appendChild(searchBoxHTML);
     }
-    dist()
+    
     return () => {searchRef.current = null}
   }, []);
 
-  const handleImageUpload = (event) => {
-    setImages(Array.from(event.target.files))
-  }
+ 
+  // Load listing data if available from location.state
+  useEffect(() => {
+    if (location.state) {
+      const { price, address, images, desc, phoneNumber, startDate, endDate } = location.state;
+      
+      setPrice(price);
+      setAddress(address);
+      setImages(images);
+      setDesc(desc);
+      setPhoneNumber(phoneNumber);
+      setStartDate(new Date(startDate));
+      setEndDate(new Date(endDate));
+    }
+  }, [location.state]);
 
+  const handleImageUpload = (event) => {
+    const files = Array.from(event.target.files);
+    const imageUrls = files.map(file => URL.createObjectURL(file));
+    setImages(imageUrls);
+  };
+  
+ 
   const handleStartDateChange = (date) => {
     setStartDate(date);
   };
@@ -86,7 +107,7 @@ function AddListing() {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    console.log(id)
+    
     try {
       const urlList = `${process.env.REACT_APP_API_URL}/upload/listings`
       const formData = new FormData();
@@ -111,11 +132,26 @@ function AddListing() {
             'Content-Type': 'multipart/form-data',
           }
         }).then(console.log("Finished uploading..."));
+  
+      // Add this line to navigate after the POST request
+      navigate('/PreviewListing', {
+        state: {
+          price,
+          address,
+          images,
+          desc,
+          phoneNumber,
+          startDate,
+          endDate,
+          lon: position.lng,
+          lat: position.lat,
+        },
+      });
     } catch (err) {
       console.log(err);
     }
   }
-
+  
 
   return (
     <div>
@@ -145,7 +181,7 @@ function AddListing() {
                 </label>
                 <DatePicker
                   selected={startDate}
-                  onChange={(handleStartDateChange)}
+                  onChange={handleStartDateChange}
                   selectsStart
                   startDate={startDate}
                   endDate={endDate}
@@ -154,7 +190,7 @@ function AddListing() {
                 />
                 <DatePicker
                   selected={endDate}
-                  onChange={(handleEndDateChange)}
+                  onChange={handleEndDateChange}
                   selectsEnd
                   startDate={startDate}
                   endDate={endDate}
@@ -225,16 +261,29 @@ function AddListing() {
                 />
               </div>
             </div>
-            <div>
-              <button
-                type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
-              >
-                Add Listing
-              </button>
-            </div>
-          </form>
+            <Link
+  to={"/PreviewListing"}
+  state = {
+    {
+      price,
+      address,
+      images,
+      desc,
+      phoneNumber,
+      startDate,
+      endDate,
+      lon: position.lng,
+      lat: position.lat,
+    }
+  }
+  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+>
+  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+    <i className="fas fa-arrow-right"></i>
+  </span>
+  Preview
+</Link>
+</form>
         </div>
       </div>
       <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">

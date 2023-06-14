@@ -1,3 +1,4 @@
+
 const listingModel = require("../models/listingModel");
 const imageModel = require("../models/imageModel");
 const multer = require("multer");
@@ -9,6 +10,7 @@ const axios = require("axios")
 module.exports.upload = upload;
 
 module.exports.uploadListing = async (req, res) => {
+    
     try {
         //Upload listing
         const result = await listingModel.insertMany({
