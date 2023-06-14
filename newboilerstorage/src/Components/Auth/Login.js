@@ -28,7 +28,7 @@ function LogIn() {
       if (res.data.success === true) {
         alert("Logged in")
         console.log(res.data.details)
-        navigate(`/home/${res.data.details.id}/${res.data.details.isHost}`)
+        navigate(`/home/${res.data.details.id}/${res.data.details.isHost}`, { state: { firstName: res.data.details.firstName, lastName: res.data.details.lastName }})
       } else {
         alert(res.data.notExist ? "Account has not been signed up" : "Invalid credentials")
         console.log("Error to log in");

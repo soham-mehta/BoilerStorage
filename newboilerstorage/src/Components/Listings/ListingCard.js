@@ -20,6 +20,9 @@ function ListingCard({ id, imgSrc, title, address, price, dist }) {
             <div className="font-semibold text-lg">
               {title}
             </div>
+            <div className="font-semibold text-lg">
+              {dist}
+            </div>
             <div className="font-light text-neutral-500">
               Address: {address}
             </div>

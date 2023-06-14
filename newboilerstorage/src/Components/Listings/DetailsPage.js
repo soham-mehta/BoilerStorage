@@ -26,18 +26,17 @@ function DetailsPage() {
                 idleTimePress: 500,
                 minNumberOfCharacters: 0,
                 searchOptions: {
-                    key: process.env.REACT_APP_TOM_TOM_KEY,
-                    language: 'en-GB',
-                    limit: 5,
-                    typeahead: true,
-                    countrySet: 'US'
-                },
-                autocompleteOptions: {
-                    key: process.env.REACT_APP_TOM_TOM_KEY,
-                    language: 'en-GB'
+                  key: process.env.REACT_APP_TOM_TOM_KEY,
+                  language: 'en-GB',
+                  limit: 5,
+                  typeahead: true,
+                  countrySet: 'US',
+                  boundingBox: {minLon: -88.0979, minLat: 37.7715, maxLon: -84.7846, maxLat: 41.7613}
+                  //query: "United States",
+                  //entityTypeSet: "Country"
                 },
                 units: 'miles'
-            }
+              }
             const ttSearchBox = new SearchBox(services.services, options);
             const selectRes = (event) => {
                 if (!event) {
@@ -129,13 +128,14 @@ function DetailsPage() {
 
     return (
         <div>
-            <NavBar id={id} />
+            <NavBar id={id} isHost={'true'}/>
             <div className="max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-row h-screen">
                 <div className="mt-6 sm:mt-8 md:mt-16 lg:mt-20 xl:mt-28 w-2/3">
                     <h1 className="text-4xl font-bold text-gray-900">{listingDetails.ownerName ? listingDetails.ownerName : ""}</h1>
                     <p className="mt-4 text-xl text-gray-500">Contact Number: {listingDetails.contactNumber ? listingDetails.contactNumber : ""}</p>
                     <p className="mt-4 text-xl text-gray-500">Address: {listingDetails.address ? listingDetails.address : ""}</p>
                     <p className="mt-4 text-xl text-gray-500">Dates Available: {listingDetails.startDate ? listingDetails.startDate : ""} - {listingDetails.endDate ? listingDetails.endDate : ""}</p>
+                    <p className="mt-4 text-xl text-gray-500">Price: {listingDetails.price ? listingDetails.price : ""}</p>
                     <p className="mt-4 text-xl text-gray-500">Number of Boxes Left: {listingDetails.numBoxesLeft ? listingDetails.numBoxesLeft : ""}</p>
                     <div className="mt-8">
                         <h2 className="text-2xl font-bold text-gray-900">Photos:</h2>

@@ -219,35 +219,29 @@ function Pricing() {
               ))}
               <div className="flex flex-col items-start gap-x-8 gap-y-6 rounded-3xl p-8 ring-1 ring-gray-900/10 sm:gap-y-10 sm:p-10 lg:col-span-2 lg:flex-row lg:items-center">
                 <div className="lg:min-w-0 lg:flex-1">
-                <h3 
-  style={{ color: "#CEB888" }}
-  className="text-lg font-semibold leading-8 tracking-tight"
->
-Have Extra Space? No Subletters?
-</h3>
+                  <h3
+                    style={{ color: "#CEB888" }}
+                    className="text-lg font-semibold leading-8 tracking-tight"
+                  >
+                    Have Extra Space? No Subletters?
+                  </h3>
 
                   <p className="mt-1 text-base leading-7 text-gray-600">
-<<<<<<< HEAD
-
-                    Sign up to be a host on Boiler Storage and make money off your empty space. You can make hundreds of dollars - just for letting classmates’ boxes sit.
-=======
-                
-                  Why not monetize your unused space? Register as a host on BoilerStorage and earn money from your empty corners. Let the boxes of your classmates rest in your space, and you could be pocketing hundreds of dollars.
->>>>>>> 7ce316c81625e0e518a0a1ca23d801ada5a95e71
-                  </p>
-                </div>
+                    Why not monetize your unused space? Register as a host on BoilerStorage and earn money from your empty corners. Let the boxes of your classmates rest in your space, and you could be pocketing hundreds of dollars.
+                  </p >
+                </div >
                 <a
                   href="mailto:mehta233@purdue.edu"
                   className="rounded-md px-3.5 py-2 text-sm font-semibold leading-6 text-rose-600 ring-1 ring-inset ring-rose-200 hover:ring-rose-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
                 >
                   Contact Us <span aria-hidden="true">&rarr;</span>
                 </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              </div >
+            </div >
+          </div >
+        </div >
+      </div >
+    </div >
   );
 }
 
@@ -268,8 +262,8 @@ function Features() {
 
 
           <p className="mt-6 text-lg leading-8f text-gray-600">
-          We're committed to providing a hassle-free, affordable, and dependable service.
-            
+            We're committed to providing a hassle-free, affordable, and dependable service.
+
           </p>
         </div>
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
@@ -383,7 +377,6 @@ function Hero({ loggedIn, id, isHost }) {
     { name: "Contact", href: "mailto:mehta233@purdue.edu", home: true, host: false, loggedIn: true },
     { name: "Login", href: "/Login", home: true, host: false, loggedIn: false },
     { name: "SignUp", href: "/SignUp", home: true, host: false, loggedIn: false },
-  
   ];
 
   return (
@@ -522,15 +515,15 @@ function Hero({ loggedIn, id, isHost }) {
             <div className="mx-auto max-w-7xl px-6 pb-32 pt-36 sm:pt-60 lg:px-8 lg:pt-32">
               <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
                 <div className="w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
-                <h1 className="text-4xl font-bold tracking-tight text-black sm:text-6xl">
-      Welcome to
-  </h1>
-  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl" style={{color: '#CEB888'}}>
-      BoilerStorage
-  </h1>
+                  <h1 className="text-4xl font-bold tracking-tight text-black sm:text-6xl">
+                    Welcome to
+                  </h1>
+                  <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl" style={{ color: '#CEB888' }}>
+                    BoilerStorage
+                  </h1>
 
                   <p className="relative mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
-                  Need a place to stash your stuff over the summer break? Welcome to BoilerStorage - we're the Airbnb of storage solutions. Our mission? Transform the cost dynamics of housing through a marketplace that efficiently connects those seeking storage with those who have extra room to spare.
+                    Need a place to stash your stuff over the summer break? Welcome to BoilerStorage - we're the Airbnb of storage solutions. Our mission? Transform the cost dynamics of housing through a marketplace that efficiently connects those seeking storage with those who have extra room to spare.
                   </p>
                   {loggedIn ? <></> : (<div
                     className="mt-10 flex items-center gap-x-6"
@@ -544,19 +537,11 @@ function Hero({ loggedIn, id, isHost }) {
 
                       Sign Up Now
                     </a>
-<<<<<<< HEAD
-                  </div>)}
-                  {loggedIn ? <></> : (<ul className="text-sm pt-3 text-gray-500">
-                    <li>Log In / Sign Up is required to add a new listing as a Host or to book a listing as a Guest</li>
-                    <br></br>
-                    <li>Available listings may be viewed without logging in</li>
-                  </ul>)}
-=======
                   </div>
-                  <ul className="text-sm pt-3 text-gray-500">
-                  To start your journey as a Host or to book a space as a Guest, sign up or log in. Browsing our array of available listings is available even without logging in.
-</ul>
->>>>>>> 7ce316c81625e0e518a0a1ca23d801ada5a95e71
+                  )}
+                  {loggedIn ? <></> : (<ul className="text-sm pt-3 text-gray-500">
+                    To start your journey as a Host or to book a space as a Guest, sign up or log in. Browsing our array of available listings is available even without logging in.
+                  </ul>)}
                   <br></br>
                   <br></br>
                   <br></br>
@@ -626,7 +611,7 @@ function Home({ loggedIn }) {
   
   */
   const { id, isHost } = useParams();
-
+  const location = useLocation();
   return (
     <>
       <Hero loggedIn={loggedIn} id={id} isHost={isHost === 'true'}></Hero>

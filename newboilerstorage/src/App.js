@@ -15,6 +15,7 @@ import DetailsPage from "./Components/Listings/DetailsPage";
 import EditListing from "./Components/Listings/EditListing";
 import EditListingForm from './Components/Listings/EditListingForm';
 import PreviewListing from './Components/Home/PreviewListing';
+import { ListingContext, ListingProvider } from './Components/Home/AddListingContext';
 
 function App() {
   return (
@@ -22,16 +23,16 @@ function App() {
       <Routes>
         <Route exact path='/SignUp/' Component={SignUp} />
         <Route exact path='/Login/' Component={Login} />
-        <Route exact path='/' element={<Home loggedIn={false}/>} />
-        <Route exact path='/home/:id/:isHost' element={<Home loggedIn={true}/>} />
-        <Route exact path='/addlisting/:id' Component={AddListing} />
+        <Route exact path='/' element={<Home loggedIn={false} />} />
+        <Route exact path='/home/:id/:isHost' element={<Home loggedIn={true} />} />
+        <Route exact path='/addlisting/:id' element={<ListingProvider><AddListing /></ListingProvider>} />
         <Route exact path='/editlisting/:id' Component={EditListing} />
         <Route exact path='/ListingPage' element={<ListingPage />} />
         <Route exact path='/ListingPage/:id/:isHost' element={<ListingPage />} />
         <Route exact path='/profile/:id/:isHost' element={<ProfilePage />} />
         <Route path="/details/:id" Component={DetailsPage} />
-        <Route exact path = '/edit/details/:id' element = {<EditListingForm />} />
-        <Route exact path="/PreviewListing" Component={PreviewListing} />
+        <Route exact path='/edit/details/:id' element={<EditListingForm />} />
+        <Route exact path="/PreviewListing/:id" element={<ListingProvider><PreviewListing /></ListingProvider>} />
       </Routes>
     </Router>
   );

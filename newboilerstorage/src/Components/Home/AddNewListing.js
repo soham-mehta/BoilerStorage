@@ -1,42 +1,40 @@
-<<<<<<< HEAD
-import React, { useState, useRef, useEffect } from 'react';
-import axios, * as others from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
-=======
-import React, { useRef,useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
-import { useNavigate, useLocation, useParams } from 'react-router-dom';
->>>>>>> 7ce316c81625e0e518a0a1ca23d801ada5a95e71
+import { useNavigate, useLocation, useParams, Link } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
-import { Link } from 'react-router-dom';
 
 import Navbar from './NavBar';
 import tt from "@tomtom-international/web-sdk-services";
 import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
-import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox'
+import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
+import { ListingContext } from './AddListingContext';
 
 
 function AddListing() {
-<<<<<<< HEAD
-  const navigate = useNavigate();
   const { id } = useParams();
-=======
-  const {id} = useParams();
   const navigate = useNavigate();
-  const location = useLocation();
-
->>>>>>> 7ce316c81625e0e518a0a1ca23d801ada5a95e71
-  const [price, setPrice] = useState(0);
-  const [address, setAddress] = useState("");
-  const [images, setImages] = useState([]);
-  const [desc, setDesc] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [position, setPosition] = useState({lng: 0, lat: 0});
+  const {
+    price,
+    setPrice,
+    address,
+    setAddress,
+    images,
+    setImages,
+    desc,
+    setDesc,
+    phoneNumber,
+    setPhoneNumber,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    position,
+    setPosition
+  } = useContext(ListingContext);
 
   const searchRef = useRef(null);
+  const imageID = useRef("images");
 
   const options = {
     idleTimePress: 100,
@@ -46,23 +44,23 @@ function AddListing() {
       language: 'en-GB',
       limit: 5,
       typeahead: true,
-      countrySet: 'US'
+      countrySet: 'US',
+      boundingBox: { minLon: -88.0979, minLat: 37.7715, maxLon: -84.7846, maxLat: 41.7613 }
     },
-    autocompleteOptions: {
-      key: process.env.REACT_APP_TOM_TOM_KEY,
-      language: 'en-GB'
+    labels: {
+      placeholder: address,
     },
     units: 'miles'
   }
 
   const selectRes = (results) => {
+    console.log(results)
+    if (!results.data.result.address.freeformAddress) {
+      return;
+    }
     setAddress(results.data.result.address.freeformAddress)
-    setPosition({...position, lng: results.data.result.position.lng, lat: results.data.result.position.lat})
-    console.log(results.data.result.position)
-    console.log(results.data.result.address.freeformAddress)
+    setPosition({ ...position, lng: results.data.result.position.lng, lat: results.data.result.position.lat })
   }
-
-  
 
   const ttSearchBox = new SearchBox(tt.services, options);
   ttSearchBox.on(
@@ -76,38 +74,21 @@ function AddListing() {
 
   useEffect(() => {
     // Append the HTMLElement to the container element
-    //console.log(searchRef.current)
     console.log(searchBoxHTML)
     if (searchRef.current) {
       searchRef.current.appendChild(searchBoxHTML);
     }
-    
-    return () => {searchRef.current = null}
+
+    return () => { searchRef.current = null }
   }, []);
 
- 
-  // Load listing data if available from location.state
-  useEffect(() => {
-    if (location.state) {
-      const { price, address, images, desc, phoneNumber, startDate, endDate } = location.state;
-      
-      setPrice(price);
-      setAddress(address);
-      setImages(images);
-      setDesc(desc);
-      setPhoneNumber(phoneNumber);
-      setStartDate(new Date(startDate));
-      setEndDate(new Date(endDate));
-    }
-  }, [location.state]);
 
   const handleImageUpload = (event) => {
     const files = Array.from(event.target.files);
-    const imageUrls = files.map(file => URL.createObjectURL(file));
-    setImages(imageUrls);
+    setImages(files);
   };
-  
- 
+
+
   const handleStartDateChange = (date) => {
     setStartDate(date);
   };
@@ -118,7 +99,7 @@ function AddListing() {
 
   const onSubmit = async (event) => {
     event.preventDefault();
-    
+
     try {
       const urlList = `${process.env.REACT_APP_API_URL}/upload/listings`
       const formData = new FormData();
@@ -143,34 +124,20 @@ function AddListing() {
             'Content-Type': 'multipart/form-data',
           }
         }).then(console.log("Finished uploading..."));
-<<<<<<< HEAD
-      navigate(`/home/${id}/true`);
-=======
-  
-      // Add this line to navigate after the POST request
-      navigate('/PreviewListing', {
-        state: {
-          price,
-          address,
-          images,
-          desc,
-          phoneNumber,
-          startDate,
-          endDate,
-          lon: position.lng,
-          lat: position.lat,
-        },
-      });
->>>>>>> 7ce316c81625e0e518a0a1ca23d801ada5a95e71
     } catch (err) {
       console.log(err);
     }
   }
-  
+
+  const handleButtonClick = () => {
+    imageID.current.click();
+  };
+
+
 
   return (
     <div>
-      <Navbar id = {id} isHost={"true"}></Navbar>
+      <Navbar id={id} isHost={"true"}></Navbar>
 
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
@@ -184,9 +151,9 @@ function AddListing() {
                 <label htmlFor="location" className="sr-only">
                   Location
                 </label>
-                <div 
+                <div
                   className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-                  ref = {searchRef}  
+                  ref={searchRef}
                 >
                 </div>
               </div>
@@ -267,38 +234,38 @@ function AddListing() {
                 </label>
                 <input
                   id="images"
+                  ref={imageID}
                   name="images"
                   type="file"
                   accept=".jpg,.jpeg,.png"
                   onChange={handleImageUpload}
                   multiple
+                  style={{ opacity: 0, position: 'absolute', top: 0, left: 0 }}
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 />
+                <label htmlFor="images" className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm justify-center">
+                  <button
+                    onClick={handleButtonClick}
+                    htmlFor="images"
+                    style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
+                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    {images.length > 0 ? `${images.length} ${images.length == 1 ? "file" : "files"} uploaded` : "Upload"}
+                  </button>
+                </label>
+
               </div>
             </div>
             <Link
-  to={"/PreviewListing"}
-  state = {
-    {
-      price,
-      address,
-      images,
-      desc,
-      phoneNumber,
-      startDate,
-      endDate,
-      lon: position.lng,
-      lat: position.lat,
-    }
-  }
-  className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
->
-  <span className="absolute left-0 inset-y-0 flex items-center pl-3">
-    <i className="fas fa-arrow-right"></i>
-  </span>
-  Preview
-</Link>
-</form>
+              to={`/PreviewListing/${id}`}
+              style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+                <i className="fas fa-arrow-right"></i>
+              </span>
+              Preview
+            </Link>
+          </form>
         </div>
       </div>
       <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
