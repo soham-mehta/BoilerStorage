@@ -3,6 +3,7 @@ import tt from "@tomtom-international/web-sdk-services";
 import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 import axios, * as others from 'axios';
+import ReactDOM from 'react-dom';
 
 function FilterBar({ onFilterChange }) {
   const [date, setDate] = useState('');
@@ -47,6 +48,9 @@ function FilterBar({ onFilterChange }) {
   }, []);
 
   const handleFilterChange = async () => {
+    if (location === "") {
+      return;
+    }
     const url = `https://api.tomtom.com/search/2/geocode/${location}.json?key=${process.env.REACT_APP_TOM_TOM_KEY}`;
     const res = await axios.get(url);
     console.log(res.data.results[0].position)
@@ -60,7 +64,7 @@ function FilterBar({ onFilterChange }) {
         <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         <div 
           className='w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm items-center justify-center'
-          ref = {searchRef}  
+          ref = {searchRef}
         >
         </div>
         

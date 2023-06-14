@@ -10,16 +10,7 @@ import {
 import { useParams, Link, useLocation } from "react-router-dom";
 
 
-const navigation = [
-  { name: "Features", href: "#features", home: true, host: false, loggedIn: true },
-  { name: "Pricing", href: "#pricing", home: true, host: false, loggedIn: true },
-  { name: "FAQ", href: "#faq", home: true, host: false, loggedIn: true },
-  { name: "View Listings", href: "/ListingPage", home: true, host: false, loggedIn: true },
-  { name: "Contact", href: "mailto:mehta233@purdue.edu", home: true, host: false, loggedIn: true },
-  { name: "Login", href: "/Login", home: true, host: false, loggedIn: false },
-  { name: "SignUp", href: "/SignUp", home: true, host: false, loggedIn: false },
 
-];
 
 const features = [
   {
@@ -238,11 +229,11 @@ function Pricing() {
 
                   <p className="mt-1 text-base leading-7 text-gray-600">
 
-                    Sign up to be a host on Boxlet Storage and make money off your empty space. You can make hundreds of dollars - just for letting classmates’ boxes sit.
+                    Sign up to be a host on Boiler Storage and make money off your empty space. You can make hundreds of dollars - just for letting classmates’ boxes sit.
                   </p>
                 </div>
                 <a
-                  href="mailto:emblifyai@gmail.com"
+                  href="mailto:mehta233@purdue.edu"
                   className="rounded-md px-3.5 py-2 text-sm font-semibold leading-6 text-rose-600 ring-1 ring-inset ring-rose-200 hover:ring-rose-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
                 >
                   Contact Us <span aria-hidden="true">&rarr;</span>
@@ -380,6 +371,17 @@ function PhotoGrid() {
 function Hero({ loggedIn, id, isHost }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  const navigation = [
+    { name: "Features", href: "#features", home: true, host: false, loggedIn: true },
+    { name: "Pricing", href: "#pricing", home: true, host: false, loggedIn: true },
+    { name: "FAQ", href: "#faq", home: true, host: false, loggedIn: true },
+    { name: "View Listings", href: "/ListingPage", home: true, host: false, loggedIn: true },
+    { name: "Contact", href: "mailto:mehta233@purdue.edu", home: true, host: false, loggedIn: true },
+    { name: "Login", href: "/Login", home: true, host: false, loggedIn: false },
+    { name: "SignUp", href: "/SignUp", home: true, host: false, loggedIn: false },
+  
+  ];
+
   return (
     <div className="bg-white">
       <header className="absolute inset-x-0 top-0 z-50">
@@ -390,13 +392,27 @@ function Hero({ loggedIn, id, isHost }) {
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
               (item.home && !loggedIn) || (loggedIn && item.loggedIn) ?
-                (<a
+                (item.name !== "View Listings" ? (<a
                   key={item.name}
                   href={item.href}
                   className="text-sm font-semibold leading-6 text-gray-900"
                 >
                   {item.name}
-                </a>) : <></>
+                </a>) :
+                  ((loggedIn) ? (<a
+                    key={item.name}
+                    href={`${item.href}/${id}/${isHost}`}
+                    className="text-sm font-semibold leading-6 text-gray-900"
+                  >
+                    {item.name}
+                  </a>) : (<a
+                    key={item.name}
+                    href={item.href}
+                    className="text-sm font-semibold leading-6 text-gray-900"
+                  >
+                    {item.name}
+                  </a>))
+                ) : <></>
 
             ))}
             {isHost ?
@@ -405,7 +421,7 @@ function Hero({ loggedIn, id, isHost }) {
               ) : <></>}
             {loggedIn ?
               (
-                <Link to={`/profile/${id}`} className="text-sm font-semibold leading-6 text-gray-900">Profile</Link>
+                <Link to={`/profile/${id}/${isHost}`} className="text-sm font-semibold leading-6 text-gray-900">Profile</Link>
               ) : <></>}
           </div>
 
@@ -514,7 +530,7 @@ function Hero({ loggedIn, id, isHost }) {
 
                     BoilerStorage is  a peer-to-peer storage solution - call it an Airbnb for storage. In a bid to reduce the costs of housing, BoilerStorage is a marketplace that matches people who need storage with folks who have extra space.
                   </p>
-                  <div
+                  {loggedIn ? <></> : (<div
                     className="mt-10 flex items-center gap-x-6"
                     style={{ zIndex: 999999 }}
                   >
@@ -526,12 +542,12 @@ function Hero({ loggedIn, id, isHost }) {
 
                       Sign Up Now
                     </a>
-                  </div>
-                  <ul className="text-sm pt-3 text-gray-500">
+                  </div>)}
+                  {loggedIn ? <></> : (<ul className="text-sm pt-3 text-gray-500">
                     <li>Log In / Sign Up is required to add a new listing as a Host or to book a listing as a Guest</li>
                     <br></br>
                     <li>Available listings may be viewed without logging in</li>
-                  </ul>
+                  </ul>)}
                   <br></br>
                   <br></br>
                   <br></br>
@@ -600,12 +616,11 @@ function Home({ loggedIn }) {
   /*
   
   */
-  const { id } = useParams();
-  const { state } = useLocation();
+  const { id, isHost } = useParams();
 
   return (
     <>
-      <Hero loggedIn={loggedIn} id={id} isHost={(state) ? (state.isHost) : false}></Hero>
+      <Hero loggedIn={loggedIn} id={id} isHost={isHost === 'true'}></Hero>
       <PhotoGrid></PhotoGrid>
       <Features></Features>
       <Pricing></Pricing>

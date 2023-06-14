@@ -1,29 +1,31 @@
-import ListingCard from './ListingCard';
-import FilterBar from './FilterBar';
-import NavBar from './../Home/NavBar';
+import ListingCard from './HostListingCard';
+import Navbar from '../Home/NavBar';
 import React, { useState, useEffect } from 'react';
 
 import axios, * as others from 'axios';
 import { useParams } from 'react-router-dom';
 
 
-function ListingPage() {
+function EditListing() {
     const [listing, setListing] = useState([]);
     const params = useParams();
-    const {id, isHost} = Object.keys(params).length > 0 ? params : "";
+    const { id } = Object.keys(params).length > 0 ? params : "";
 
     useEffect(() => {
-        const date = new Date()
-        console.log(date)
-        onFilterChange({date: date, price: 0, lat: 0, lon: 0})
+        (async () => {
+            onFilterChange()
+        })()
+        
     }, [])
 
 
-    const onFilterChange = async ({ date, price, lat, lon }) => {
-        const url = `${process.env.REACT_APP_API_URL}/get/listings`
+    const onFilterChange = async () => {
+        console.log(id);
+        console.log(params);
+        const url = `${process.env.REACT_APP_API_URL}/edit/listings`
         const res = await axios.post(url, 
             {
-                date: date, price: price, lat: lat, lon: lon
+                user: id
             })
         console.log(res)
         console.log(res.data.allDocs)
@@ -32,8 +34,7 @@ function ListingPage() {
 
     return (
         <div>
-        <NavBar id = {id} isHost={isHost} />
-
+        <Navbar id = {id} isHost={`true`} />
         <div
         className="
             max-w-[2520px]
@@ -44,7 +45,6 @@ function ListingPage() {
             px-4
             "
         >
-            <FilterBar onFilterChange={onFilterChange} />
             <div 
             className="
                 pt-24
@@ -68,8 +68,12 @@ function ListingPage() {
                         address = {item.address}
                         title = "Purdue University"
                         imgSrc={`data:${item.img[0][0]};base64,${item.img[0][1]}`}
+                        img = {item.img}
                         id = {item.id}
-                        dist = {item.dist}
+                        startDate = {item.startDate}
+                        endDate = {item.endDate}
+                        phoneNumber = {item.phoneNumber}
+                        desc = {item.desc}
                     />
                 ))}
             </div>
@@ -83,4 +87,4 @@ function ListingPage() {
     )
 }
 
-export default ListingPage;
+export default EditListing;

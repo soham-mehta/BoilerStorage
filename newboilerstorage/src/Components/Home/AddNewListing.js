@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios, * as others from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import Navbar from './NavBar';
@@ -11,6 +11,7 @@ import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox'
 
 
 function AddListing() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [price, setPrice] = useState(0);
   const [address, setAddress] = useState("");
@@ -105,12 +106,13 @@ function AddListing() {
       console.log(geo.data.results[0].position)
       formData.append('lat', geo.data.results[0].position.lat);
       formData.append('lon', geo.data.results[0].position.lon);
-      const resImg = await axios.post(urlList, formData,
+      await axios.post(urlList, formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
           }
         }).then(console.log("Finished uploading..."));
+      navigate(`/home/${id}/true`);
     } catch (err) {
       console.log(err);
     }
@@ -119,7 +121,7 @@ function AddListing() {
 
   return (
     <div>
-      <Navbar></Navbar>
+      <Navbar id = {id} isHost={"true"}></Navbar>
 
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">

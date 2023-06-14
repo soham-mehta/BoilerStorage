@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import NavBar from '../Home/NavBar';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios, * as others from 'axios';
 
 function ProfilePage(props) {
-    const { id } = useParams();
+    const { id, isHost } = useParams();
     const [isEditMode, setIsEditMode] = useState(false);
     const [user, setUser] = useState({});
     const org = useRef({});
-
 
     useEffect(() => {
         (async () => {
@@ -54,7 +53,7 @@ function ProfilePage(props) {
 
     return (
         <div>
-            <NavBar></NavBar>
+            <NavBar id = {id} isHost={isHost} />
             <div className="max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4">
                 <h1 className="text-2xl font-bold py-6">Profile Page</h1>
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-10">

@@ -12,13 +12,11 @@ import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 
 
 function DetailsPage() {
-
     const { id } = useParams();
     const [listingDetails, setListingDetails] = useState({});
 
 
     const mapElement = useRef();
-    const [map, setMap] = useState({});
     const startMark = useRef(null);
     const endMark = useRef(null);
     useEffect(() => {
@@ -57,14 +55,14 @@ function DetailsPage() {
                         map.removeSource('route');
                     }
 
-                    var start  = startMark.current.getLngLat();
+                    var start = startMark.current.getLngLat();
                     var end = endMark.current.getLngLat();
 
                     services.services.calculateRoute({
                         key: process.env.REACT_APP_TOM_TOM_KEY,
                         traffic: true,
                         locations: `${start.lng},${start.lat}:${end.lng},${end.lat}`
-                    }).then(function(response) {
+                    }).then(function (response) {
                         console.log(response)
                         var geojson = response.toGeoJson();
                         map.addLayer({
@@ -79,12 +77,12 @@ function DetailsPage() {
                                 'line-width': 8
                             }
                         });
-    
+
                         var coordinates = geojson.features[0].geometry.coordinates;
                         console.log(coordinates)
                         let bounds = new tt.LngLatBounds();
 
-                        coordinates.forEach(function(point) {
+                        coordinates.forEach(function (point) {
                             bounds.extend(tt.LngLat.convert(point));
                         });
 
@@ -92,13 +90,13 @@ function DetailsPage() {
                             map.fitBounds(bounds, { duration: 0, padding: 50 });
                         }
                     }).catch();
-        
+
                     if (!startMark.current || !endMark.current) {
                         return;
                     }
 
 
-        
+
                 }
             }
             ttSearchBox.on(
@@ -131,7 +129,7 @@ function DetailsPage() {
 
     return (
         <div>
-            <NavBar />
+            <NavBar id={id} />
             <div className="max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-row h-screen">
                 <div className="mt-6 sm:mt-8 md:mt-16 lg:mt-20 xl:mt-28 w-2/3">
                     <h1 className="text-4xl font-bold text-gray-900">{listingDetails.ownerName ? listingDetails.ownerName : ""}</h1>

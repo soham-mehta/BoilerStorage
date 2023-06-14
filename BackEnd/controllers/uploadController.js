@@ -1,5 +1,4 @@
 const listingModel = require("../models/listingModel");
-const imageModel = require("../models/imageModel");
 const multer = require("multer");
 const mongoose = require('mongoose');
 const userModel = require("../models/userModel");
@@ -10,6 +9,22 @@ module.exports.upload = upload;
 
 module.exports.uploadListing = async (req, res) => {
     try {
+        
+
+        //Upload images
+        const images = req.files
+        //let idArr = []
+
+        const imageDocs = images.map((image) => {
+            return {
+                 _id: new mongoose.Types.ObjectId(),
+                 data: image.buffer,
+                 contentType: image.mimetype,
+            }; 
+            //idArr.push(cur._id)
+        })
+        //console.log(result)
+
         //Upload listing
         const result = await listingModel.insertMany({
             user: new mongoose.Types.ObjectId(req.body.user),
@@ -20,23 +35,11 @@ module.exports.uploadListing = async (req, res) => {
             phoneNumber: req.body.phoneNumber,
             desc: req.body.desc,
             lat: req.body.lat,
-            lon: req.body.lon
+            lon: req.body.lon,
+            img: imageDocs
         })
 
-        //Upload images
-        const images = req.files
-        let idArr = []
-
-        const imageDocs = images.map((image) => {
-            const cur = new imageModel();
-            cur._id = new mongoose.Types.ObjectId();   
-            cur.data = image.buffer;
-            cur.contentType = image.mimetype;
-            idArr.push(cur._id)
-            return cur;
-        })
-        //console.log(result)
-        await imageModel.insertMany(imageDocs);
+        /*await imageModel.insertMany(imageDocs);
         await listingModel.updateOne(
             {
                 _id: result[0]._id
@@ -47,7 +50,7 @@ module.exports.uploadListing = async (req, res) => {
                     img: idArr
                 }
             }
-        )
+        )*/
         //console.log(idArr)
         //console.log("Finished running")
         res.send("Success")
@@ -65,10 +68,9 @@ module.exports.retrieveListing = async (req, res) => {
         } else {
             const arrBin = []
             for (const image of match.img) {
-                const curImg = await imageModel.findById(image);
-                arrBin.push([curImg.contentType, curImg.data.toString('base64')])
+                arrBin.push([image.contentType, image.data.toString('base64')])
             }
-            const owner = await userModel.findById(match.user)
+            const owner = await userModel.findById(match.user);
             const startDate = new Date(match.startDate);
             const endDate = new Date(match.endDate);
             const data = {
@@ -114,12 +116,42 @@ module.exports.retrievePage = async (req, res) => {
                 //  console.log(doc)
                 const arrBin = []
                 for (const image of doc.img) {
-                    const curImg = await imageModel.findById(image);
-                    arrBin.push([curImg.contentType, curImg.data.toString('base64')])
+                    arrBin.push([image.contentType, image.data.toString('base64')])
                 }
-                allDocs.push({price: doc.price, img: arrBin, id: doc.id, address: doc.address, dist: await dist({lat, lon}, {lat: doc.lat, lon: doc.lon})})
+                allDocs.push({price: doc.price, img: arrBin, id: doc.id, address: doc.address})
             }
             //console.log(allDocs)
+            res.send({allDocs})
+        }
+    } catch (err) {
+        console.log(err)
+    }
+    //, dist: await dist({lat, lon}, {lat: doc.lat, lon: doc.lon})
+}
+
+module.exports.retrieveHostListing = async (req, res) => {
+    try {
+        const { user } = req.body;
+        console.log(user)
+        const match = await listingModel.find(
+            {
+                user: (user),
+            }
+        ).sort([['price', 1], ['startDate', 1]])
+        if (match === null) {
+            console.log("Error retrieving document")
+        } else {
+            console.log(match)
+            const allDocs = []
+            for (const doc of match) {
+                //  console.log(doc)
+                const arrBin = []
+                for (const image of doc.img) {
+                    arrBin.push([image.contentType, image.data.toString('base64')])
+                }
+                allDocs.push({price: doc.price, img: arrBin, id: doc.id, address: doc.address, startDate: doc.startDate, endDate: doc.endDate, desc: doc.desc, phoneNumber: doc.phoneNumber })
+            }
+            console.log(allDocs)
             res.send({allDocs})
         }
     } catch (err) {

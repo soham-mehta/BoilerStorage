@@ -38,7 +38,7 @@ function SignUp() {
         alert("This email has already been registered with an account!")
       } else {
         alert("Successfully signed up!")
-        navigate(`/home/${res.data.id}`, { state: {isHost}})
+        navigate(`/home/${res.data.id}/${isHost}`)
       }
     } catch (err) {
       console.log(err);

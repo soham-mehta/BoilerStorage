@@ -5,32 +5,20 @@ function ListingCard({ id, imgSrc, title, address, price, dist }) {
     return (
         <div className="col-span-1 cursor-pointer group gap-10">
           <div className="flex flex-col gap-2 w-full">
-            <div 
+          <div 
               className="
                 aspect-square 
                 w-full 
                 relative 
                 overflow-hidden 
                 rounded-xl
+                justify-center
               "
             >
-              <img
-                fill
-                className="
-                  object-cover 
-                  w-full 
-                  group-hover:scale-90 
-                  transition
-                "
-                src={imgSrc}
-                alt="Listing"
-              />
+              <img src={imgSrc} alt="" className="w-full h-full object-cover" />
             </div>
             <div className="font-semibold text-lg">
               {title}
-            </div>
-            <div className="font-semibold text-lg">
-              {dist / 1600} mi
             </div>
             <div className="font-light text-neutral-500">
               Address: {address}
