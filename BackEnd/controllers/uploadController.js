@@ -1,3 +1,4 @@
+
 const listingModel = require("../models/listingModel");
 const multer = require("multer");
 const mongoose = require('mongoose');
@@ -8,6 +9,7 @@ const axios = require("axios")
 module.exports.upload = upload;
 
 module.exports.uploadListing = async (req, res) => {
+    
     try {
         
 

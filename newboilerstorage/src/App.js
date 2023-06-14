@@ -14,6 +14,7 @@ import ProfilePage from './Components/Home/ProfilePage';
 import DetailsPage from "./Components/Listings/DetailsPage";
 import EditListing from "./Components/Listings/EditListing";
 import EditListingForm from './Components/Listings/EditListingForm';
+import PreviewListing from './Components/Home/PreviewListing';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route exact path='/profile/:id/:isHost' element={<ProfilePage />} />
         <Route path="/details/:id" Component={DetailsPage} />
         <Route exact path = '/edit/details/:id' element = {<EditListingForm />} />
+        <Route exact path="/PreviewListing" Component={PreviewListing} />
       </Routes>
     </Router>
   );
