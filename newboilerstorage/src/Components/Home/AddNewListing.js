@@ -55,10 +55,8 @@ function AddListing() {
 
   const selectRes = (results) => {
     console.log(results)
-    if (!results.data.result.address.freeformAddress) {
-      return;
-    }
-    setAddress(results.data.result.address.freeformAddress)
+    console.log(results.data.text)
+    setAddress(results.data.text)
     setPosition({ ...position, lng: results.data.result.position.lng, lat: results.data.result.position.lat })
   }
 
@@ -221,11 +219,12 @@ function AddListing() {
                 />
                 <label className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm justify-center">
                   <button
+                    type = "button"
                     onClick={handleButtonClick}
                     htmlFor="images"
                     style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
                     className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    {images.length > 0 ? `${images.length} ${images.length == 1 ? "file" : "files"} uploaded` : "Upload"}
+                    {images.length > 0 ? `${images.length} ${images.length === 1 ? "file" : "files"} uploaded` : "Upload"}
                   </button>
                 </label>
 

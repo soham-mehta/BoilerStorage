@@ -12,8 +12,11 @@ import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 
 
 function DetailsPage() {
-    const { id } = useParams();
+    const { userID, id, isHost } = useParams();
     const [listingDetails, setListingDetails] = useState({});
+    const [boxesRequested, setBoxesRequested] = useState(5);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
 
     const mapElement = useRef();
@@ -73,7 +76,7 @@ function DetailsPage() {
                             },
                             'paint': {
                                 'line-color': '#2faaff',
-                                'line-width': 8
+                                'line-width': 4
                             }
                         });
 
@@ -93,9 +96,6 @@ function DetailsPage() {
                     if (!startMark.current || !endMark.current) {
                         return;
                     }
-
-
-
                 }
             }
             ttSearchBox.on(
@@ -126,9 +126,21 @@ function DetailsPage() {
         //updateMap(parseFloat(res.data.listing.lon), parseFloat(res.data.listing.lat))
     }
 
+    const onReserve = async () => {
+        const url = `${process.env.REACT_APP_API_URL}/upload/reservation`;
+        const result = await axios.post(url, {
+            guestID: userID,
+            listingID: id,
+            boxesRequested,
+            startDate,
+            endDate
+        })
+        
+    }
+
     return (
         <div>
-            <NavBar id={id} isHost={'true'} />
+            <NavBar id={userID} isHost={isHost} />
             <div className="max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-row h-screen">
                 <div className="mt-6 sm:mt-8 md:mt-16 lg:mt-20 xl:mt-28 w-2/3">
                     <h1 className="text-4xl font-bold text-gray-900">{listingDetails.ownerName ? listingDetails.ownerName : ""}</h1>
@@ -161,6 +173,8 @@ function DetailsPage() {
             </div>
             <div className='flex justify-center'>
                 <button
+                    type="button"
+                    onClick={onReserve}
                     style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
                     className="group relative w-1/2 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >

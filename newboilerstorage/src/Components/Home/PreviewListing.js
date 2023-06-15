@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect, useRef, useContext } from "react";
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import NavBar from '../Home/NavBar';
 
 import axios, * as others from 'axios';
@@ -13,6 +13,7 @@ function Preview() {
 
     const { id } = useParams();
     const mapElement = useRef();
+    const navigate = useNavigate();
 
     const {
         price,
@@ -56,15 +57,16 @@ function Preview() {
             formData.append('phoneNumber', phoneNumber)
             const urlGeo = `https://api.tomtom.com/search/2/geocode/${address}.json?key=${process.env.REACT_APP_TOM_TOM_KEY}`
             const geo = await axios.get(urlGeo)
-            console.log(geo.data.results[0].position)
-            formData.append('lat', geo.data.results[0].position.lat);
-            formData.append('lon', geo.data.results[0].position.lon);
+            //console.log(geo.data.results[0].position)
+            formData.append('lat', position.lat);
+            formData.append('lon', position.lng);
             await axios.post(urlList, formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     }
-                }).then(console.log("Finished uploading..."));
+                }).then(console.log("Finished uploading..."))
+                //.then(navigate(`/home/${id}/true`, {replace: true}));
         } catch (err) {
             console.log(err);
         }
@@ -112,29 +114,7 @@ function Preview() {
                         </div>
                     </div>
                     <br></br>
-                    <div className="flex justify-center">
-                        <Link
-                            to={`/addlisting/${id}`}
-                            style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
-                            className="group relative w-1/2 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Edit
-                        </Link>
-                    </div>
 
-                    <br></br>
-                    <div
-                        className="flex justify-center"
-                    >
-                        <button
-                            onClick={onSubmit}
-                            type="button"
-                            style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
-                            className="group relative w-1/2 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        >
-                            Confirm
-                        </button>
-                    </div>
 
                 </div>
                 <div className="mt-6 sm:mt-8 md:mt-16 lg:mt-20 xl:mt-28 h-full w-1/2 justify-items-center align-middle">
@@ -143,6 +123,29 @@ function Preview() {
                         className="h-2/3 rounded-sm"
                     />
                 </div>
+            </div>
+            <div className="flex justify-center">
+                <Link
+                    to={`/addlisting/${id}`}
+                    style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
+                    className="group relative w-1/4 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Edit
+                </Link>
+            </div>
+
+            <br></br>
+            <div
+                className="flex justify-center"
+            >
+                <button
+                    onClick={onSubmit}
+                    type="button"
+                    style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
+                    className="group relative w-1/4 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                    Confirm
+                </button>
             </div>
             <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
                 <p className="mt-10 text-center text-xs leading-5 text-gray-500">

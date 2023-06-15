@@ -28,7 +28,7 @@ function LogIn() {
       if (res.data.success === true) {
         alert("Logged in")
         console.log(res.data.details)
-        navigate(`/home/${res.data.details.id}/${res.data.details.isHost}`, { state: { firstName: res.data.details.firstName, lastName: res.data.details.lastName }})
+        navigate(`/home/${res.data.details.id}/${res.data.details.isHost}`, { state: { firstName: res.data.details.firstName, lastName: res.data.details.lastName }, replace: true})
       } else {
         alert(res.data.notExist ? "Account has not been signed up" : "Invalid credentials")
         console.log("Error to log in");
@@ -41,7 +41,7 @@ function LogIn() {
 
   return (
     <div>
-      <Navbar></Navbar>
+      <Navbar id ={""} isHost={""} />
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
 

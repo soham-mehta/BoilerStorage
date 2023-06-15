@@ -258,9 +258,6 @@ function Features() {
           </h2>
 
           <p style={{ wordSpacing: "0.25em" }} className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl whitespace-nowrap">Share space. Store Belongings. Earn Money.</p>
-
-
-
           <p className="mt-6 text-lg leading-8f text-gray-600">
             We're committed to providing a hassle-free, affordable, and dependable service.
 
@@ -419,6 +416,10 @@ function Hero({ loggedIn, id, isHost }) {
             {loggedIn ?
               (
                 <Link to={`/profile/${id}/${isHost}`} className="text-sm font-semibold leading-6 text-gray-900">Profile</Link>
+              ) : <></>}
+              {loggedIn ?
+              (
+                <Link to={`/`} className="text-sm font-semibold leading-6 text-gray-900">Log Out</Link>
               ) : <></>}
           </div>
 

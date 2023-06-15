@@ -33,7 +33,7 @@ function App() {
         <Route exact path='/ListingPage' element={<ListingPage />} />
         <Route exact path='/ListingPage/:id/:isHost' element={<ListingPage />} />
         <Route exact path='/profile/:id/:isHost' element={<ProfilePage />} />
-        <Route path="/details/:id" Component={DetailsPage} />
+        <Route path="/details/:userID/:id/:isHost" Component={DetailsPage} />
         <Route exact path='/edit/details/:id' element={<EditProvider> <EditListingForm /> </EditProvider>} />
         <Route exact path='/edit/preview/:id' element={<EditProvider><PreviewEdit /></EditProvider>} />
         <Route exact path="/PreviewListing/:id" element={<ListingProvider><PreviewListing /></ListingProvider>} />

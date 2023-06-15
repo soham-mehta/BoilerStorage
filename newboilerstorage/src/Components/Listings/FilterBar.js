@@ -2,13 +2,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import tt from "@tomtom-international/web-sdk-services";
 import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
-import axios, * as others from 'axios';
-import ReactDOM from 'react-dom';
 
 function FilterBar({ onFilterChange }) {
   const [date, setDate] = useState('');
   const [price, setPrice] = useState(0);
   const [location, setLocation] = useState('');
+  const [position, setPosition] = useState({});
   const searchRef = useRef(null);
 
   const options = {
@@ -28,8 +27,9 @@ function FilterBar({ onFilterChange }) {
   }
 
   const selectRes = (results) => {
+    setPosition({...results.data.result.position})
     setLocation(results.data.result.address.freeformAddress)
-    console.log(results.data.result.address.freeformAddress)
+    console.log(results)
   }
 
   const ttSearchBox = new SearchBox(tt.services, options);
@@ -45,16 +45,14 @@ function FilterBar({ onFilterChange }) {
     if (searchRef.current) {
       searchRef.current.appendChild(searchBoxHTML);
     }
+    //return () => {searchRef.current.removeChild(searchBoxHTML)} 
   }, []);
 
   const handleFilterChange = async () => {
     if (location === "") {
       return;
     }
-    const url = `https://api.tomtom.com/search/2/geocode/${location}.json?key=${process.env.REACT_APP_TOM_TOM_KEY}`;
-    const res = await axios.get(url);
-    console.log(res.data.results[0].position)
-    onFilterChange({ date, price, lat: res.data.results[0].position.lat, lon: res.data.results[0].position.lon });
+    onFilterChange({ date, price, lat: position.lat, lon: position.lng });
   }
   
   return (

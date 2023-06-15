@@ -10,7 +10,8 @@ const Navbar = ({ id, isHost }) => {
     { name: "View Listings", href: (id !== "" ? `/ListingPage/${id}/${isHost}` : "/"), included: true },
     { name: "View Pending Requests", href: `/pendingrequests/${id}/${isHost}`, included: true },
     { name: "Contact", href: "mailto:mehta233@purdue.edu", included: true },
-    { name: "Profile", href: `/profile/${id}/${isHost}`, included: id !== "" }
+    { name: "Profile", href: `/profile/${id}/${isHost}`, included: id !== "" },
+    { name: "Log Out", href: "/", included: id !== ""}
   ];
 
   return (
