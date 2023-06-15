@@ -37,7 +37,7 @@ function App() {
         <Route exact path='/edit/details/:id' element={<EditProvider> <EditListingForm /> </EditProvider>} />
         <Route exact path='/edit/preview/:id' element={<EditProvider><PreviewEdit /></EditProvider>} />
         <Route exact path="/PreviewListing/:id" element={<ListingProvider><PreviewListing /></ListingProvider>} />
-        <Route exact path='/pendingrequests/' Component={ViewPendingRequests} />
+        <Route exact path='/pendingrequests/:id/:isHost' Component={ViewPendingRequests} />
       </Routes>
     </Router>
   );
