@@ -66,7 +66,7 @@ function Preview() {
                         'Content-Type': 'multipart/form-data',
                     }
                 }).then(console.log("Finished uploading..."))
-                //.then(navigate(`/home/${id}/true`, {replace: true}));
+                .then(navigate(`/home/${id}/true`, {replace: true}));
         } catch (err) {
             console.log(err);
         }
