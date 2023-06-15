@@ -14,6 +14,7 @@ import ProfilePage from './Components/Home/ProfilePage';
 import DetailsPage from "./Components/Listings/DetailsPage";
 import EditListing from "./Components/Listings/EditListing";
 import EditListingForm from './Components/Listings/EditListingForm';
+import ViewPendingRequests from "./Components/Listings/ViewPendingRequests";
 import PreviewListing from './Components/Home/PreviewListing';
 import { ListingContext, ListingProvider } from './Components/Home/AddListingContext';
 import { EditContext, EditProvider } from './Components/Listings/EditListingContext';
@@ -36,6 +37,7 @@ function App() {
         <Route exact path='/edit/details/:id' element={<EditProvider> <EditListingForm /> </EditProvider>} />
         <Route exact path='/edit/preview/:id' element={<EditProvider><PreviewEdit /></EditProvider>} />
         <Route exact path="/PreviewListing/:id" element={<ListingProvider><PreviewListing /></ListingProvider>} />
+        <Route exact path='/pendingrequests/' Component={ViewPendingRequests} />
       </Routes>
     </Router>
   );
