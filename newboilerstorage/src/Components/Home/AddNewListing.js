@@ -97,41 +97,17 @@ function AddListing() {
     setEndDate(date);
   };
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const urlList = `${process.env.REACT_APP_API_URL}/upload/listings`
-      const formData = new FormData();
-      images.forEach((image) => {
-        formData.append('images', image);
-      });
-      formData.append('user', id);
-      formData.append('price', price);
-      formData.append('address', address);
-      formData.append('startDate', startDate);
-      formData.append('endDate', endDate);
-      formData.append('desc', desc);
-      formData.append('phoneNumber', phoneNumber)
-      const urlGeo = `https://api.tomtom.com/search/2/geocode/${address}.json?key=${process.env.REACT_APP_TOM_TOM_KEY}`
-      const geo = await axios.get(urlGeo)
-      console.log(geo.data.results[0].position)
-      formData.append('lat', geo.data.results[0].position.lat);
-      formData.append('lon', geo.data.results[0].position.lon);
-      await axios.post(urlList, formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          }
-        }).then(console.log("Finished uploading..."));
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
   const handleButtonClick = () => {
     imageID.current.click();
   };
+
+  const onSubmit = () => {
+    if (images.length === 0) {
+      alert("Please upload at least one image");
+      return;
+    }
+    navigate(`/PreviewListing/${id}`)
+  }
 
 
 
@@ -240,10 +216,10 @@ function AddListing() {
                   accept=".jpg,.jpeg,.png"
                   onChange={handleImageUpload}
                   multiple
-                  style={{ opacity: 0, position: 'absolute', top: 0, left: 0 }}
+                  style={{ display: 'none' }}
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 />
-                <label htmlFor="images" className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm justify-center">
+                <label className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm justify-center">
                   <button
                     onClick={handleButtonClick}
                     htmlFor="images"

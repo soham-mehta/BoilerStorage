@@ -4,7 +4,7 @@ const multer = require("multer");
 const mongoose = require('mongoose');
 const userModel = require("../models/userModel");
 
-const upload = multer({storage: multer.memoryStorage(), limits: { files: 5}})
+const upload = multer({ storage: multer.memoryStorage(), limits: { files: 5 } })
 const axios = require("axios")
 module.exports.upload = upload;
 
@@ -15,27 +15,33 @@ module.exports.uploadListing = async (req, res) => {
 
         const imageDocs = images.map((image) => {
             return {
-                 _id: new mongoose.Types.ObjectId(),
-                 data: image.buffer,
-                 contentType: image.mimetype,
-            }; 
+                _id: new mongoose.Types.ObjectId(),
+                data: image.buffer,
+                contentType: image.mimetype,
+            };
             //idArr.push(cur._id)
         })
         //console.log(result)
 
         //Upload listing
-        const result = await listingModel.insertMany({
-            user: new mongoose.Types.ObjectId(req.body.user),
-            price: req.body.price,
-            address: req.body.address,
-            startDate: new Date(req.body.startDate),
-            endDate: new Date(req.body.endDate),
-            phoneNumber: req.body.phoneNumber,
-            desc: req.body.desc,
-            lat: req.body.lat,
-            lon: req.body.lon,
-            img: imageDocs
-        })
+        console.log(req.body.endDate);
+        try {
+            const result = await listingModel.insertMany({
+                user: new mongoose.Types.ObjectId(req.body.user),
+                price: req.body.price,
+                address: req.body.address,
+                startDate: new Date(req.body.startDate),
+                endDate: new Date(req.body.endDate),
+                phoneNumber: req.body.phoneNumber,
+                desc: req.body.desc,
+                lat: req.body.lat,
+                lon: req.body.lon,
+                img: imageDocs
+            })
+        } catch (err) {
+            console.log(req.body.endDate)
+        }
+        
         res.send("Success")
     } catch (err) {
         console.log(err)
@@ -44,33 +50,47 @@ module.exports.uploadListing = async (req, res) => {
 
 module.exports.editListing = async (req, res) => {
     try {
-        //Upload images
-        const images = req.files
+        const filter = { _id: new mongoose.Types.ObjectId(req.body.id) };
+        let update = {}
+        if (req.body.changed) {
+            //Upload images
+            const images = req.files
 
-        const imageDocs = images.map((image) => {
-            return {
-                 _id: new mongoose.Types.ObjectId(),
-                 data: image.buffer,
-                 contentType: image.mimetype,
-            }; 
-            //idArr.push(cur._id)
-        })
-
-        const filter = { _id: req.body.id };
-        const update = { $set: { 
-            price: req.body.price,
-            address: req.body.address,
-            startDate: new Date(req.body.startDate),
-            endDate: new Date(req.body.endDate),
-            phoneNumber: req.body.phoneNumber,
-            desc: req.body.desc,
-            lat: req.body.lat,
-            lon: req.body.lon,
-            img: imageDocs
-         } };
-
+            const imageDocs = images.map((image) => {
+                return {
+                    _id: new mongoose.Types.ObjectId(),
+                    data: image.buffer,
+                    contentType: image.mimetype,
+                };
+            })
+            update = {
+                $set: {
+                    price: req.body.price,
+                    address: req.body.address,
+                    startDate: (req.body.startDate),
+                    endDate: (req.body.endDate),
+                    phoneNumber: req.body.phoneNumber,
+                    desc: req.body.desc,
+                    lat: req.body.lat,
+                    lon: req.body.lon,
+                    img: imageDocs
+                }
+            };
+        } else {
+            update = {
+                $set: {
+                    price: req.body.price,
+                    address: req.body.address,
+                    startDate: (req.body.startDate),
+                    endDate: (req.body.endDate),
+                    phoneNumber: req.body.phoneNumber,
+                    desc: req.body.desc,
+                    lat: req.body.lat,
+                    lon: req.body.lon
+                }
+            };
+        }
         await listingModel.updateOne(filter, update);
-        res.send("Success")
     } catch (err) {
         console.log(err)
     }
@@ -81,7 +101,7 @@ module.exports.retrieveListing = async (req, res) => {
     try {
         const match = await listingModel.findById(req.body.id)
         if (match === null) {
-            
+
         } else {
             const arrBin = []
             for (const image of match.img) {
@@ -95,14 +115,15 @@ module.exports.retrieveListing = async (req, res) => {
                 img: arrBin,
                 address: match.address,
                 numBoxesLeft: match.desc,
-                startDate: `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}`, 
+                startDate: `${startDate.getMonth() + 1}/${startDate.getDate()}/${startDate.getFullYear()}`,
                 endDate: `${endDate.getMonth() + 1}/${endDate.getDate()}/${endDate.getFullYear()}`,
                 ownerName: `${owner.firstName} ${owner.lastName}`,
                 contactNumber: match.phoneNumber,
                 lon: match.lon,
-                lat: match.lat
+                lat: match.lat,
+                ownerID: owner._id
             }
-            res.send({listing: data})
+            res.send({ listing: data, success: true })
         }
     } catch (err) {
         console.log(err)
@@ -110,12 +131,15 @@ module.exports.retrieveListing = async (req, res) => {
 }
 
 const dist = async (origin, dest) => {
+    if (dest.length === 0 || origin.length === 0) {
+        return [];
+    }
     const url = `https://api.tomtom.com/routing/matrix/2?key=mPKAe08o98VphQ0zNO2fG1l6eUPRVpTh`
     const config = {
         headers: {
-          'Content-Type': 'application/json' // Set the desired MIME type here
+            'Content-Type': 'application/json' // Set the desired MIME type here
         }
-      };
+    };
     const postBody = {
         origins: origin,
         destinations: dest,
@@ -125,7 +149,7 @@ const dist = async (origin, dest) => {
             traffic: "live",
             travelMode: "car",
         }
-    }    
+    }
     try {
         const res = await axios.post(url, postBody);
         let allRoutes = []
@@ -150,18 +174,18 @@ module.exports.retrievePage = async (req, res) => {
         const { date, price, lat, lon } = req.body;
         const match = await listingModel.find(
             {
-                price: { $gte: price},
-                startDate: { $gte: date}
+                price: { $gte: price },
+                startDate: { $gte: date }
             }
         ).sort([['price', 1], ['startDate', 1]])
         if (match === null) {
             console.log("Error retrieving document")
         } else {
             const allDocs = []
-            let origin = [{point: { latitude: parseFloat(lat), longitude: parseFloat(lon)}}]; 
+            let origin = [{ point: { latitude: parseFloat(lat), longitude: parseFloat(lon) } }];
             let dest = [];
             for (const doc of match) {
-                dest.push({point: {latitude: parseFloat(doc.lat), longitude: parseFloat(doc.lon) }});
+                dest.push({ point: { latitude: parseFloat(doc.lat), longitude: parseFloat(doc.lon) } });
             }
             const allRoutes = await dist(origin, dest);
             let i = 0;
@@ -174,7 +198,7 @@ module.exports.retrievePage = async (req, res) => {
                 allDocs.push({ price: doc.price, img: arrBin, id: doc.id, address: doc.address, dist: allRoutes[i] })
                 i++;
             }
-            res.send({allDocs})
+            res.send({ allDocs })
         }
     } catch (err) {
         console.log(err)
@@ -193,16 +217,16 @@ module.exports.retrieveHostListing = async (req, res) => {
         if (match === null) {
             console.log("Error retrieving document")
         } else {
-            console.log(match)
-            const allDocs = []
+            //console.log(match)
+            const allDocs = [];
             for (const doc of match) {
                 const arrBin = []
                 for (const image of doc.img) {
                     arrBin.push([image.contentType, image.data.toString('base64')])
                 }
-                allDocs.push({price: doc.price, img: arrBin, id: doc.id, address: doc.address, startDate: doc.startDate, endDate: doc.endDate, desc: doc.desc, phoneNumber: doc.phoneNumber })
+                allDocs.push({ price: doc.price, img: arrBin, id: doc.id, address: doc.address, startDate: doc.startDate, endDate: doc.endDate, desc: doc.desc, phoneNumber: doc.phoneNumber })
             }
-            res.send({allDocs})
+            res.send({ allDocs })
         }
     } catch (err) {
         console.log(err)

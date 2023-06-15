@@ -376,7 +376,7 @@ function Hero({ loggedIn, id, isHost }) {
     { name: "View Listings", href: "/ListingPage", home: true, host: false, loggedIn: true },
     { name: "Contact", href: "mailto:mehta233@purdue.edu", home: true, host: false, loggedIn: true },
     { name: "Login", href: "/Login", home: true, host: false, loggedIn: false },
-    { name: "SignUp", href: "/SignUp", home: true, host: false, loggedIn: false },
+    { name: "Sign Up", href: "/SignUp", home: true, host: false, loggedIn: false },
   ];
 
   return (

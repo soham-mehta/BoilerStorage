@@ -1,9 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
 const Navbar = ({ id, isHost }) => {
-  console.log(id)
-  console.log(isHost)
   const navigation = [
     { name: "Home", href: (id !== "" ? `/home/${id}/${isHost}` : "/"), included: true },
     { name: "Login", href: "/Login", included: id === "" },

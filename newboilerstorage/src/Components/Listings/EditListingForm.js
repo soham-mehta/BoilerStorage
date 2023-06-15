@@ -1,79 +1,99 @@
-import React, { useState, useRef, useEffect } from 'react';
-import axios, * as others from 'axios';
-import { useParams, useLocation } from 'react-router-dom';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css';
 import Navbar from '../Home/NavBar';
 import tt from "@tomtom-international/web-sdk-services";
 import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
-import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox'
+import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
+import { EditContext } from './EditListingContext';
 
 
 
 function EditListingForm() {
-    const { orgPrice, orgAddress, orgImages, orgDesc, orgPhoneNumber, orgStartDate, orgEndDate } = useLocation().state;
     const { id } = useParams();
-    const [price, setPrice] = useState(orgPrice);
-    const [address, setAddress] = useState(orgAddress);
-    const [images, setImages] = useState(orgImages);
-    const [desc, setDesc] = useState(orgDesc)
-    const [phoneNumber, setPhoneNumber] = useState(orgPhoneNumber);
+    const imageID = useRef("images");
+    const {
+        price,
+        setPrice,
+        address,
+        setAddress,
+        images,
+        setImages,
+        desc,
+        setDesc,
+        phoneNumber,
+        setPhoneNumber,
+        startDate,
+        setStartDate,
+        endDate,
+        setEndDate,
+        changeImages,
+        setChanges,
+        lon,
+        setLon,
+        lat,
+        setLat,
+        ownerID,
+        ownerName
+    } = useContext(EditContext);
 
-    const [startDate, setStartDate] = useState(new Date(orgStartDate));
-    const [endDate, setEndDate] = useState(new Date(orgEndDate));
+    const navigate = useNavigate();
 
     const searchRef = useRef(null);
-
-    const options = {
-        idleTimePress: 100,
-        minNumberOfCharacters: 0,
-        searchOptions: {
-            key: process.env.REACT_APP_TOM_TOM_KEY,
-            language: 'en-GB',
-            limit: 5,
-            typeahead: true,
-            countrySet: 'US'
-        },
-        autocompleteOptions: {
-            key: process.env.REACT_APP_TOM_TOM_KEY,
-            language: 'en-GB'
-        },
-        units: 'miles'
-    }
-
-    const selectRes = (results) => {
-        setAddress(results.data.result.address.freeformAddress)
-        console.log(results.data.result.address.freeformAddress)
-    }
-
-    const dist = async () => {
-        const url = `https://api.tomtom.com/routing/1/calculateRoute/52.50931,13.42936:52.50274,13.43872/json?instructionsType=text&language=en-US&vehicleHeading=90&sectionType=traffic&report=effectiveSettings&routeType=eco&traffic=true&avoid=unpavedRoads&travelMode=car&vehicleMaxSpeed=120&vehicleCommercial=false&vehicleEngineType=combustion&key=${process.env.REACT_APP_TOM_TOM_KEY}`
-        const res = await axios.get(url)
-        console.log(res)
-    }
-
-    const ttSearchBox = new SearchBox(tt.services, options);
-    ttSearchBox.on(
-        "tomtom.searchbox.resultselected",
-        selectRes
-    )
-    const searchBoxHTML = ttSearchBox.getSearchBoxHTML();
-    searchBoxHTML.style.border = '0';
-    searchBoxHTML.style.marginTop = '0';
-    searchBoxHTML.style.position = 'static';
 
     useEffect(() => {
         // Append the HTMLElement to the container element
         //console.log(searchRef.current)
-        console.log(searchBoxHTML)
+        const options = {
+            idleTimePress: 100,
+            minNumberOfCharacters: 0,
+            searchOptions: {
+                key: process.env.REACT_APP_TOM_TOM_KEY,
+                language: 'en-GB',
+                limit: 5,
+                typeahead: true,
+                countrySet: 'US',
+                boundingBox: { minLon: -88.0979, minLat: 37.7715, maxLon: -84.7846, maxLat: 41.7613 }
+            },
+            labels: {
+                placeholder: address,
+            },
+            units: 'miles'
+        }
+
+        const selectRes = (results) => {
+            if (!results.data.result.address.freeformAddress) {
+                return;
+            }
+            setAddress(results.data.result.address.freeformAddress);
+            //console.log(results.data.result.address.freeformAddress)
+            setLon(results.data.result.position.lng);
+            setLat(results.data.result.position.lat);
+        }
+
+        const ttSearchBox = new SearchBox(tt.services, options);
+        ttSearchBox.on(
+            "tomtom.searchbox.resultselected",
+            selectRes
+        )
+        const searchBoxHTML = ttSearchBox.getSearchBoxHTML();
+        searchBoxHTML.style.border = '0';
+        searchBoxHTML.style.marginTop = '0';
+        searchBoxHTML.style.position = 'static';
         if (searchRef.current) {
             searchRef.current.appendChild(searchBoxHTML);
         }
-        dist()
         return () => { searchRef.current = null }
     }, []);
 
     const handleImageUpload = (event) => {
+        if (Array.from(event.target.files).length === 0) {
+            return;
+        }
+        if (!changeImages) {
+            setChanges(true);
+        }
         setImages(Array.from(event.target.files))
     }
 
@@ -82,52 +102,32 @@ function EditListingForm() {
     };
 
     const handleEndDateChange = (date) => {
+        console.log(date);
         setEndDate(date);
     };
 
-    const onSubmit = async (event) => {
-        event.preventDefault();
-        console.log(id)
-        try {
-            const urlList = `${process.env.REACT_APP_API_URL}/upload/listings`
-            const formData = new FormData();
-            images.forEach((image) => {
-                formData.append('images', image);
-            });
-            formData.append('user', id);
-            formData.append('price', price);
-            formData.append('address', address);
-            formData.append('startDate', startDate);
-            formData.append('endDate', endDate);
-            formData.append('desc', desc);
-            formData.append('phoneNumber', phoneNumber)
-            const urlGeo = `https://api.tomtom.com/search/2/geocode/${address}.json?key=${process.env.REACT_APP_TOM_TOM_KEY}`
-            const geo = await axios.get(urlGeo)
-            console.log(geo.data.results[0].position)
-            formData.append('lat', geo.data.results[0].position.lat);
-            formData.append('lon', geo.data.results[0].position.lon);
-            await axios.post(urlList, formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    }
-                }).then(console.log("Finished uploading..."));
-        } catch (err) {
-            console.log(err);
+    const onSubmit = () => {
+        if (images && images.length === 0) {
+            alert("Please upload at least one image");
+            return;
         }
+        navigate(`/edit/preview/${id}`)
     }
 
+    const handleButtonClick = () => {
+        imageID.current.click();
+    };
 
     return (
         <div>
-            <Navbar id={id} isHost={"true"}></Navbar>
+            <Navbar id={ownerID} isHost={"true"}></Navbar>
 
             <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
                     <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">
-                        Add a new listing
+                        Edit your listing
                     </h2>
-                    <form className="mt-8 space-y-6" onSubmit={onSubmit}>
+                    <form className="mt-8 space-y-6">
                         <input type="hidden" name="remember" defaultValue="true" />
                         <div className="rounded-md shadow-sm -space-y-px">
                             <div>
@@ -221,18 +221,32 @@ function EditListingForm() {
                                     type="file"
                                     accept=".jpg,.jpeg,.png"
                                     onChange={handleImageUpload}
+                                    style={{ display: 'none' }}
                                     multiple
+                                    ref = {imageID}
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                 />
+                                <label className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm justify-center">
+                                    <button
+                                        onClick={handleButtonClick}
+                                        htmlFor="images"
+                                        type="button"
+                                        style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
+                                        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        {images && images.length > 0 ? `${images.length} ${images.length === 1 ? "file" : "files"} uploaded` : "Upload"}
+                                    </button>
+                                </label>
                             </div>
                         </div>
                         <div>
                             <button
-                                type="submit"
+                                type= "submit"
+                                onClick={onSubmit}
+                                to={`/edit/preview/${id}`}
                                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
                             >
-                                Add Listing
+                                Preview Changes
                             </button>
                         </div>
                     </form>

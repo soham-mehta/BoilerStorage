@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-function HostCard({ id, imgSrc, title, address, price, startDate, endDate, phoneNumber, desc, img }) {
+function HostCard({ id, imgSrc, title, address, price, startDate, endDate, phoneNumber, desc, img, ownerID }) {
   return (
     <div className="col-span-1 cursor-pointer group gap-10">
       <div className="flex flex-col gap-2 w-full">
@@ -37,7 +37,8 @@ function HostCard({ id, imgSrc, title, address, price, startDate, endDate, phone
               orgDesc: desc,
               orgPhoneNumber: phoneNumber, 
               orgStartDate: startDate, 
-              orgEndDate: endDate
+              orgEndDate: endDate,
+              ownerID
             }}>
             <button
               type="submit"

@@ -15,7 +15,7 @@ function ListingPage() {
     useEffect(() => {
         const date = new Date()
         console.log(date)
-        onFilterChange({date: date, price: 0, lat: 0, lon: 0})
+        onFilterChange({date: date, price: 0, lat: 40.4237, lon: -86.9212})
     }, [])
 
 

@@ -74,6 +74,7 @@ function EditListing() {
                         endDate = {item.endDate}
                         phoneNumber = {item.phoneNumber}
                         desc = {item.desc}
+                        ownerID={id}
                     />
                 ))}
             </div>

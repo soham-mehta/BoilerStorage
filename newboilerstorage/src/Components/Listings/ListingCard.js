@@ -21,7 +21,7 @@ function ListingCard({ id, imgSrc, title, address, price, dist }) {
               {title}
             </div>
             <div className="font-semibold text-lg">
-              {dist}
+              {dist ? `${(dist / 1600).toFixed(2)} miles` : ""}
             </div>
             <div className="font-light text-neutral-500">
               Address: {address}

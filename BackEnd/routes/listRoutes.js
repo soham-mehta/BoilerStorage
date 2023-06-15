@@ -8,5 +8,6 @@ router.post("/upload/listings", upload.array('images', 5), listController.upload
 router.post("/get/listings", listController.retrievePage);
 router.post("/get/listing", listController.retrieveListing);
 router.post("/edit/listings", listController.retrieveHostListing);
+router.post("/post/edit/listings", upload.array('images', 5), listController.editListing);
 
 module.exports = router;

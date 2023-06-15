@@ -16,6 +16,8 @@ import EditListing from "./Components/Listings/EditListing";
 import EditListingForm from './Components/Listings/EditListingForm';
 import PreviewListing from './Components/Home/PreviewListing';
 import { ListingContext, ListingProvider } from './Components/Home/AddListingContext';
+import { EditContext, EditProvider } from './Components/Listings/EditListingContext';
+import PreviewEdit from './Components/Listings/PreviewEdits';
 
 function App() {
   return (
@@ -31,7 +33,8 @@ function App() {
         <Route exact path='/ListingPage/:id/:isHost' element={<ListingPage />} />
         <Route exact path='/profile/:id/:isHost' element={<ProfilePage />} />
         <Route path="/details/:id" Component={DetailsPage} />
-        <Route exact path='/edit/details/:id' element={<EditListingForm />} />
+        <Route exact path='/edit/details/:id' element={<EditProvider> <EditListingForm /> </EditProvider>} />
+        <Route exact path='/edit/preview/:id' element={<EditProvider><PreviewEdit /></EditProvider>} />
         <Route exact path="/PreviewListing/:id" element={<ListingProvider><PreviewListing /></ListingProvider>} />
       </Routes>
     </Router>
