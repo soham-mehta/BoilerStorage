@@ -15,21 +15,35 @@ import ReservationPopUp from './ReservationPopUp';
 function DetailsPage() {
     const { userID, id, isHost } = useParams();
     const [listingDetails, setListingDetails] = useState({});
-    const [boxesRequested, setBoxesRequested] = useState(5);
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
     const [showReservation, setShowReservation] = React.useState(false);
-
 
     const mapElement = useRef();
     const startMark = useRef(null);
     const endMark = useRef(null);
 
 
-    const handleReservationConfirm = (reservationDetails) => {
+    const handleReservationConfirm = async (reservationDetails) => {
+
         console.log(reservationDetails); // this will be { boxes: X, dates: { startDate: '...', endDate: '...' } }
+        const { boxes, dates } = reservationDetails;
+        if (dates.startDate === '' || dates.endDate === ``) {
+            return;
+        }
+        if (new Date(dates.startDate) >= new Date(dates.endDate)) {
+            alert("End date must be after start date");
+            return;
+        }
+
         // make an API call to reserve listing
-        setShowReservation(false);
+        const url = `${process.env.REACT_APP_API_URL}/upload/reservation`
+        const response = await axios.post(url, {
+            guestID: userID,
+            listingID: id,
+            startDate: new Date(dates.startDate),
+            endDate: new Date(dates.endDate),
+            boxesRequested: boxes
+        });
+        //setShowReservation(false);
     };
 
 
@@ -46,8 +60,6 @@ function DetailsPage() {
                     typeahead: true,
                     countrySet: 'US',
                     boundingBox: { minLon: -88.0979, minLat: 37.7715, maxLon: -84.7846, maxLat: 41.7613 }
-                    //query: "United States",
-                    //entityTypeSet: "Country"
                 },
                 units: 'miles'
             }
@@ -137,18 +149,6 @@ function DetailsPage() {
         //updateMap(parseFloat(res.data.listing.lon), parseFloat(res.data.listing.lat))
     }
 
-    const onReserve = async () => {
-        const url = `${process.env.REACT_APP_API_URL}/upload/reservation`;
-        const result = await axios.post(url, {
-            guestID: userID,
-            listingID: id,
-            boxesRequested,
-            startDate,
-            endDate
-        })
-        
-    }
-
     return (
         <div>
             <NavBar id={userID} isHost={isHost} />
@@ -172,9 +172,9 @@ function DetailsPage() {
                     </div>
                     <br></br>
                     <br></br>
-    
+
                 </div>
-    
+
                 <div className="mt-6 sm:mt-8 md:mt-16 lg:mt-20 xl:mt-28 h-full w-1/2 justify-items-center align-middle">
                     <div
                         ref={mapElement}
@@ -191,17 +191,17 @@ function DetailsPage() {
                     Reserve
                 </button>
             </div>
-            {showReservation && <ReservationPopUp onConfirm={handleReservationConfirm} onClose={() => setShowReservation(false)} />}
-
+            {showReservation && <ReservationPopUp onConfirm={handleReservationConfirm} onClose={() => setShowReservation(false)} maxBoxes={listingDetails.numBoxesLeft} />}
+            
             <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
                 <p className="mt-10 text-center text-xs leading-5 text-gray-500">
                     &copy; 2023 BoilerStorage. All rights reserved.
                 </p>
             </footer>
-    
+
         </div>
     );
-    
+
 }
 
 
