@@ -52,7 +52,7 @@ module.exports.editListing = async (req, res) => {
     try {
         const filter = { _id: new mongoose.Types.ObjectId(req.body.id) };
         let update = {}
-        if (req.body.changed) {
+        if (req.body.changed === 'true') {
             //Upload images
             const images = req.files
 
