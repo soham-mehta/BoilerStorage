@@ -180,7 +180,7 @@ module.exports.retrievePage = async (req, res) => {
             (await listingModel.find(
                 {
                     price: { $gte: price },
-                    startDate: { $gte: date }
+                    startDate: { $gte: date, $lte: endDate }
                 }
             ).sort([['price', 1], ['startDate', 1]]))
         if (match === null) {
