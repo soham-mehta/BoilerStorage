@@ -7,6 +7,7 @@ import tt from "@tomtom-international/web-sdk-services";
 import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 import { EditContext } from './EditListingContext';
+import Error from '../Home/Error';
 
 
 
@@ -41,6 +42,11 @@ function EditListingForm() {
     const navigate = useNavigate();
 
     const searchRef = useRef(null);
+
+    const [addressError, setAddressError] = useState(false);
+    const [uploadError, setUploadError] = useState(false);
+    const [priceError, setPriceError] = useState(false);
+    const [dateRangeError, setDateRangeError] = useState(false);
 
     useEffect(() => {
         // Append the HTMLElement to the container element
@@ -106,9 +112,22 @@ function EditListingForm() {
         setEndDate(date);
     };
 
-    const onSubmit = () => {
-        if (images && images.length === 0) {
-            alert("Please upload at least one image");
+    const onSubmit = (e) => {
+        e.preventDefault();
+        if (address === '') {
+            setAddressError(true);
+            return;
+        }
+        if (images.length === 0) {
+            setUploadError(true);
+            return;
+        }
+        if (typeof price === "string" && (Number.isNaN(parseFloat(price)))) {
+            setPriceError(true);
+            return;
+        }
+        if (new Date(startDate) >= new Date(endDate)) {
+            setDateRangeError(true);
             return;
         }
         navigate(`/edit/preview/${id}`)
@@ -118,9 +137,20 @@ function EditListingForm() {
         imageID.current.click();
     };
 
+    const handleKeyDown = (event) => {
+        // Prevent deleting the dollar sign
+        if (event.key === 'Backspace' && event.target.selectionStart === 2) {
+            event.preventDefault();
+        }
+    };
+
     return (
         <div>
             <Navbar id={ownerID} isHost={"true"}></Navbar>
+            {addressError && <Error content={"Please Enter An Address!"} setError={setAddressError} />}
+            {uploadError && <Error content={"Please Upload Your Listing's Image!"} setError={setUploadError} />}
+            {priceError && <Error content={"Invalid Price!"} setError={setPriceError} />}
+            {dateRangeError && <Error content={"Invalid Start/End Date!"} setError={setDateRangeError} />}
 
             <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
                 <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
@@ -187,11 +217,11 @@ function EditListingForm() {
                                     id="contact-information"
                                     name="contact-information"
                                     type="text"
-                                    pattern="^(\+?1[-.\s]?)?(\()?\d{3}(\))?[-.\s]?\d{3}[-.\s]?\d{4}$|^\d{10}$"
+                                    pattern="^\(\d{3}\)-\d{3}-\d{4}$"
                                     required
                                     autoComplete='tel'
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                                    placeholder="Phone Number"
+                                    placeholder="Phone Number: (XXX)-XXX-XXXX"
                                     value={phoneNumber}
                                     onChange={(event) => { setPhoneNumber(event.target.value) }}
                                 />
@@ -207,8 +237,9 @@ function EditListingForm() {
                                     required
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                     placeholder="Price per box"
-                                    value={price}
-                                    onChange={(event) => setPrice(event.target.value)}
+                                    value={`$ ${price}`}
+                                    onChange={(event) => setPrice(event.target.value.split(" ")[1])}
+                                    onKeyDown={handleKeyDown}
                                 />
                             </div>
                             <div>
@@ -223,7 +254,7 @@ function EditListingForm() {
                                     onChange={handleImageUpload}
                                     style={{ display: 'none' }}
                                     multiple
-                                    ref = {imageID}
+                                    ref={imageID}
                                     className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                 />
                                 <label className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm justify-center">
@@ -240,9 +271,8 @@ function EditListingForm() {
                         </div>
                         <div>
                             <button
-                                type= "submit"
+                                type="submit"
                                 onClick={onSubmit}
-                                to={`/edit/preview/${id}`}
                                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                 style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
                             >

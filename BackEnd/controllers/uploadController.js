@@ -41,7 +41,7 @@ module.exports.uploadListing = async (req, res) => {
         } catch (err) {
             console.log(req.body.endDate)
         }
-        
+
         res.send("Success")
     } catch (err) {
         console.log(err)
@@ -171,13 +171,18 @@ const dist = async (origin, dest) => {
 
 module.exports.retrievePage = async (req, res) => {
     try {
-        const { date, price, lat, lon } = req.body;
-        const match = await listingModel.find(
+        const { date, price, lat, lon, endDate } = req.body;
+        const match = date === "" ? (await listingModel.find(
             {
-                price: { $gte: price },
-                startDate: { $gte: date }
-            }
-        ).sort([['price', 1], ['startDate', 1]])
+                price: { $gte: price }
+            }).sort([['price', 1], ['startDate', 1]])) : 
+            
+            (await listingModel.find(
+                {
+                    price: { $gte: price },
+                    startDate: { $gte: date }
+                }
+            ).sort([['price', 1], ['startDate', 1]]))
         if (match === null) {
             console.log("Error retrieving document")
         } else {

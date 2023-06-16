@@ -9,6 +9,7 @@ import tt from "@tomtom-international/web-sdk-services";
 import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 import { ListingContext } from './AddListingContext';
+import Error from './Error';
 
 
 function AddListing() {
@@ -33,6 +34,11 @@ function AddListing() {
     setPosition
   } = useContext(ListingContext);
 
+  const [addressError, setAddressError] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
+  const [priceError, setPriceError] = useState(false);
+  const [dateRangeError, setDateRangeError] = useState(false);
+
   const searchRef = useRef(null);
   const imageID = useRef("images");
 
@@ -48,7 +54,7 @@ function AddListing() {
       boundingBox: { minLon: -88.0979, minLat: 37.7715, maxLon: -84.7846, maxLat: 41.7613 }
     },
     labels: {
-      placeholder: address,
+      placeholder: address === '' ? "Address" : address,
     },
     units: 'miles'
   }
@@ -99,19 +105,43 @@ function AddListing() {
     imageID.current.click();
   };
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (address === '') {
+      setAddressError(true);
+      return;
+    }
     if (images.length === 0) {
-      alert("Please upload at least one image");
+      setUploadError(true);
+      return;
+    }
+    if (typeof price === "string" && (Number.isNaN(parseFloat(price)))) {
+      setPriceError(true);
+      return;
+    }
+    if (new Date(startDate) >= new Date(endDate)) {
+      setDateRangeError(true);
       return;
     }
     navigate(`/PreviewListing/${id}`)
   }
+
+  const handleKeyDown = (event) => {
+    // Prevent deleting the dollar sign
+    if (event.key === 'Backspace' && event.target.selectionStart === 2) {
+      event.preventDefault();
+    }
+  };
 
 
 
   return (
     <div>
       <Navbar id={id} isHost={"true"}></Navbar>
+      {addressError && <Error content={"Please Enter An Address!"} setError={setAddressError} />}
+      {uploadError && <Error content={"Please Upload Your Listing's Image!"} setError={setUploadError} />}
+      {priceError && <Error content={"Invalid Price!"} setError={setPriceError} />}
+      {dateRangeError && <Error content={"Invalid Start/End Date!"} setError={setDateRangeError} />}
 
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
@@ -162,7 +192,7 @@ function AddListing() {
                 <input
                   id="storage-space"
                   name="storage-space"
-                  type="text"
+                  type="number"
                   value={desc}
                   onChange={(event) => { setDesc(event.target.value) }}
                   required
@@ -178,29 +208,35 @@ function AddListing() {
                   id="contact-information"
                   name="contact-information"
                   type="text"
-                  pattern="^(\+?1[-.\s]?)?(\()?\d{3}(\))?[-.\s]?\d{3}[-.\s]?\d{4}$|^\d{10}$"
+                  pattern="^\(\d{3}\)-\d{3}-\d{4}$"
                   required
                   autoComplete='tel'
                   className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Phone Number"
+                  placeholder="Phone Number: (XXX)-XXX-XXXX"
                   value={phoneNumber}
-                  onChange={(event) => { setPhoneNumber(event.target.value) }}
+                  onChange={(event) => {
+                    setPhoneNumber(event.target.value);
+                  }}
                 />
               </div>
               <div>
                 <label htmlFor="price" className="sr-only">
                   Price
                 </label>
-                <input
-                  id="price"
-                  name="price"
-                  type="text"
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  placeholder="Price per box"
-                  value={price}
-                  onChange={(event) => setPrice(event.target.value)}
-                />
+                <div className='relative'>
+                  <input
+                    id="price"
+                    name="price"
+                    type="text"
+                    required
+                    className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                    placeholder="Price per box"
+                    value={`$ ${price}`}
+                    onChange={(event) => setPrice(event.target.value.split(" ")[1])}
+                    onKeyDown={handleKeyDown}
+                  />
+                </div>
+
               </div>
               <div>
                 <label htmlFor="images" className="sr-only">
@@ -219,7 +255,7 @@ function AddListing() {
                 />
                 <label className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm justify-center">
                   <button
-                    type = "button"
+                    type="button"
                     onClick={handleButtonClick}
                     htmlFor="images"
                     style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
@@ -230,8 +266,8 @@ function AddListing() {
 
               </div>
             </div>
-            <Link
-              to={`/PreviewListing/${id}`}
+            <button
+              type="submit"
               style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
@@ -239,7 +275,7 @@ function AddListing() {
                 <i className="fas fa-arrow-right"></i>
               </span>
               Preview
-            </Link>
+            </button>
           </form>
         </div>
       </div>

@@ -23,6 +23,9 @@ function FilterBar({ onFilterChange }) {
       key: process.env.REACT_APP_TOM_TOM_KEY,
       language: 'en-GB'
     },
+    labels: {
+      placeholder: "Your Location"
+    },
     units: 'miles'
   }
 

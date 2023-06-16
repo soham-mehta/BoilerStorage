@@ -100,7 +100,7 @@ function Preview() {
                         {startDate ? ` ${new Date(startDate).toLocaleDateString('en-US')}` : ""} -
                         {endDate ? ` ${new Date(endDate).toLocaleDateString('en-US')}` : ""}
                     </p>
-                    <p className="mt-4 text-xl text-gray-500">Price: {price}</p>
+                    <p className="mt-4 text-xl text-gray-500">Price: $ {price} / box</p>
                     <p className="mt-4 text-xl text-gray-500">Number of Boxes Left: {desc}</p>
                     <div className="mt-8">
                         <h2 className="text-2xl font-bold text-gray-900">Photos:</h2>

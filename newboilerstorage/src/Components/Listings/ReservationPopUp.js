@@ -13,7 +13,7 @@ function ReservationPopUp({ onConfirm, onClose, maxBoxes }) {
       return;
     }
     if (new Date(dates.startDate) >= new Date(dates.endDate)) {
-      alert("End date must be after start date");
+      setDateRangeError(true);
       return;
     }
     onConfirm({ boxes, dates });
@@ -48,19 +48,34 @@ function ReservationPopUp({ onConfirm, onClose, maxBoxes }) {
         <button style={{ backgroundColor: '#CEB888', color: 'white' }} className="w-full py-2 rounded-md" onClick={handleConfirm}>Confirm</button>
       </div>
       {dateError && (
-        <div className="fixed top-20 left-1/2 w-30 transform -translate-x-1/2 -translate-y-1/2 bg-gray-500 text-black p-4 rounded shadow-lg">
+        <div style={{ backgroundColor: '#CEB888', color: 'white' }} className="fixed top-20 left-1/2 h-30 w-1/6 transform -translate-x-1/2 -translate-y-1/2 bg-gray-500 text-black p-4 rounded shadow-lg">
           <div className='flex justify-center'>
             <p className="mb-4">Please choose your dates!</p>
           </div>
           <div className='flex justify-center'>
             <button
-              className="bg-white text-black-500 px-4 py-2 rounded hover:bg-white-500 hover:text-white"
+              className="absolute top-2 right-2 text-white text-xl font-bold hover:text-gray-200 focus:outline-none"
               onClick={() => setDateError(false)}
             >
-              OK
+              &times;
             </button>
           </div>
 
+        </div>
+      )}
+      {dateRangeError && (
+        <div style={{ backgroundColor: '#CEB888', color: 'white' }} className="fixed top-20 left-1/2 h-30 w-1/6 transform -translate-x-1/2 -translate-y-1/2 bg-gray-500 text-black p-4 rounded shadow-lg">
+          <div className='flex justify-center'>
+            <p className="mb-4">Invalid start/end date!</p>
+          </div>
+          <div className='flex justify-center'>
+            <button
+              className="absolute top-2 right-2 text-white text-xl font-bold hover:text-gray-200 focus:outline-none"
+              onClick={() => setDateError(false)}
+            >
+              &times;
+            </button>
+          </div>
         </div>
       )}
     </div>
