@@ -9,6 +9,7 @@ import services from "@tomtom-international/web-sdk-services";
 import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
+import ReservationPopUp from './ReservationPopUp';
 
 
 function DetailsPage() {
@@ -17,11 +18,21 @@ function DetailsPage() {
     const [boxesRequested, setBoxesRequested] = useState(5);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const [showReservation, setShowReservation] = React.useState(false);
 
 
     const mapElement = useRef();
     const startMark = useRef(null);
     const endMark = useRef(null);
+
+
+    const handleReservationConfirm = (reservationDetails) => {
+        console.log(reservationDetails); // this will be { boxes: X, dates: { startDate: '...', endDate: '...' } }
+        // make an API call to reserve listing
+        setShowReservation(false);
+    };
+
+
     useEffect(() => {
         (async () => {
             const cur = await getListing();
@@ -161,9 +172,9 @@ function DetailsPage() {
                     </div>
                     <br></br>
                     <br></br>
-
+    
                 </div>
-
+    
                 <div className="mt-6 sm:mt-8 md:mt-16 lg:mt-20 xl:mt-28 h-full w-1/2 justify-items-center align-middle">
                     <div
                         ref={mapElement}
@@ -173,23 +184,24 @@ function DetailsPage() {
             </div>
             <div className='flex justify-center'>
                 <button
-                    type="button"
-                    onClick={onReserve}
+                    onClick={() => setShowReservation(true)}
                     style={{ backgroundColor: '#CEB888', hover: { backgroundColor: '#CEB888' } }}
                     className="group relative w-1/2 flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                 >
                     Reserve
                 </button>
             </div>
+            {showReservation && <ReservationPopUp onConfirm={handleReservationConfirm} onClose={() => setShowReservation(false)} />}
 
             <footer className="mx-auto max-w-7xl overflow-hidden px-6 pb-20  sm:pb-24 lg:px-8">
                 <p className="mt-10 text-center text-xs leading-5 text-gray-500">
                     &copy; 2023 BoilerStorage. All rights reserved.
                 </p>
             </footer>
-
+    
         </div>
     );
+    
 }
 
 
