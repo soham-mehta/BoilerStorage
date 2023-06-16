@@ -4,7 +4,8 @@ import '@tomtom-international/web-sdk-plugin-searchbox/dist/SearchBox.css';
 import SearchBox from '@tomtom-international/web-sdk-plugin-searchbox';
 
 function FilterBar({ onFilterChange }) {
-  const [date, setDate] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [price, setPrice] = useState(0);
   const [location, setLocation] = useState('');
   const [position, setPosition] = useState({});
@@ -43,32 +44,30 @@ function FilterBar({ onFilterChange }) {
   const searchBoxHTML = ttSearchBox.getSearchBoxHTML();
 
   useEffect(() => {
-    // Append the HTMLElement to the container element
-    //console.log(searchRef.current)
     if (searchRef.current) {
       searchRef.current.appendChild(searchBoxHTML);
     }
-    //return () => {searchRef.current.removeChild(searchBoxHTML)} 
   }, []);
 
   const handleFilterChange = async () => {
     if (location === "") {
       return;
     }
-    onFilterChange({ date, price, lat: position.lat, lon: position.lng });
+    onFilterChange({ startDate, endDate, price, lat: position.lat, lon: position.lng });
   }
   
   return (
     <div className="p-4">
       <div className="flex gap-4 mb-4">
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)} placeholder="Date" className="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
-        <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        <input style={{flex: 2}} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} placeholder="Start Date" className="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        <input style={{flex: 2}} type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} placeholder="End Date" className="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        <input style={{flex: 1}} type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         <div 
+          style={{flex: 3}}
           className='w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm items-center justify-center'
           ref = {searchRef}
         >
         </div>
-        
       </div>
       <button
         onClick={handleFilterChange}
