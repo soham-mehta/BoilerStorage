@@ -20,7 +20,8 @@
     "react-jss": "^10.10.0",
     "react-router-dom": "^6.11.2",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack": "^5.87.0"
   },
   "scripts": {
     "start": "react-scripts start",

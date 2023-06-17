@@ -1,15 +1,20 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 import axios, * as others from 'axios';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { EditContext } from './EditListingContext';
 import NavBar from '../Home/NavBar';
 import * as tt from "@tomtom-international/web-sdk-maps";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
+import Error from '../Home/Error';
 
 function PreviewEdit() {
     const { id } = useParams();
     const mapElement = useRef();
     const endMark = useRef(null);
+    const navigate = useNavigate();
+
+    const [success, setSuccess] = useState(false);
+    const [failure, setFailure] = useState(false);
 
     const {
         price,
@@ -81,7 +86,13 @@ function PreviewEdit() {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     }
-                }).then(console.log("Finished uploading..."));
+                }).then((response) => {
+                    if (response.data.success) {
+                        setSuccess(true);
+                    } else {
+                        setFailure(true);
+                    }
+                });
         } catch (err) {
             console.log(err);
         }
@@ -89,6 +100,8 @@ function PreviewEdit() {
 
     return (
         <div>
+            {success && <Error setError={setSuccess} content={"Your listing has been updated!"} path={`/home/${ownerID}/true`} />}
+            {failure && <Error setError={setFailure} content={"Failed! Please try again!"} path={`/home/${ownerID}/true`} />}
             <NavBar id={ownerID} isHost={'true'} />
             <div className="max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-row h-screen">
                 <div className="mt-6 sm:mt-8 md:mt-16 lg:mt-20 xl:mt-28 w-2/3">

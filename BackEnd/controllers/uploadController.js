@@ -38,11 +38,11 @@ module.exports.uploadListing = async (req, res) => {
                 lon: req.body.lon,
                 img: imageDocs
             })
+            res.send({ success: true });
         } catch (err) {
             console.log(req.body.endDate)
+            res.send({ success: false });
         }
-
-        res.send("Success")
     } catch (err) {
         console.log(err)
     }
@@ -91,7 +91,9 @@ module.exports.editListing = async (req, res) => {
             };
         }
         await listingModel.updateOne(filter, update);
+        res.send({ success: true });
     } catch (err) {
+        res.send({ success: false });
         console.log(err)
     }
 }

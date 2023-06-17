@@ -7,6 +7,7 @@ import axios, * as others from 'axios';
 import * as tt from "@tomtom-international/web-sdk-maps";
 import "@tomtom-international/web-sdk-maps/dist/maps.css";
 import { ListingContext } from "./AddListingContext";
+import Error from "./Error";
 
 
 function Preview() {
@@ -14,6 +15,9 @@ function Preview() {
     const { id } = useParams();
     const mapElement = useRef();
     const navigate = useNavigate();
+
+    const [success, setSuccess] = useState(false);
+    const [failure, setFailure] = useState(false);
 
     const {
         price,
@@ -65,8 +69,14 @@ function Preview() {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     }
-                }).then(console.log("Finished uploading..."))
-                .then(navigate(`/home/${id}/true`, {replace: true}));
+                }).then((response) => {
+                    if (response.data.success) {
+                        setSuccess(true);
+                    } else {
+                        setFailure(true);
+                    }
+                })
+            //.then(navigate(`/home/${id}/true`, {replace: true}));
         } catch (err) {
             console.log(err);
         }
@@ -88,7 +98,9 @@ function Preview() {
     }, [])
 
     return (
-        <div>
+        <div className={`${success || failure ? 'overflow-hidden' : ''}`}>
+            {success && <Error setError={setSuccess} content={"Your listing has been added!"} path={`/home/${id}/true`} />}
+            {failure && <Error setError={setFailure} content={"Failed! Please try again!"} path={`/home/${id}/true`} />}
             <NavBar id={id} isHost={'true'} />
             <div className="max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4 flex flex-row h-screen">
                 <div className="mt-6 sm:mt-8 md:mt-16 lg:mt-20 xl:mt-28 w-2/3">
