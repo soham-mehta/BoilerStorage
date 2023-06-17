@@ -8,6 +8,8 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { files: 5 } })
 const axios = require("axios")
 module.exports.upload = upload;
 
+require('dotenv').config();
+
 module.exports.uploadListing = async (req, res) => {
     try {
         //Upload images
@@ -136,12 +138,7 @@ const dist = async (origin, dest) => {
     if (dest.length === 0 || origin.length === 0) {
         return [];
     }
-    const url = `https://api.tomtom.com/routing/matrix/2?key=mPKAe08o98VphQ0zNO2fG1l6eUPRVpTh`
-    const config = {
-        headers: {
-            'Content-Type': 'application/json' // Set the desired MIME type here
-        }
-    };
+    const url = `https://api.tomtom.com/routing/matrix/2?key=${process.env.TOM_TOM_KEY}`
     const postBody = {
         origins: origin,
         destinations: dest,
