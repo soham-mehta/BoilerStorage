@@ -2,11 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import NavBar from '../Home/NavBar';
 import { useParams } from 'react-router-dom';
 import axios, * as others from 'axios';
+import Error from './Error';
 
 function ProfilePage(props) {
     const { id, isHost } = useParams();
     const [isEditMode, setIsEditMode] = useState(false);
     const [user, setUser] = useState({});
+    const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const org = useRef({});
 
     useEffect(() => {
@@ -21,11 +24,10 @@ function ProfilePage(props) {
                     org.current = res.data.details;
                     setUser({...res.data.details });
                 } else {
-                    console.log("Error to log in");
+                    setError("Error to log in");
                 }
             } catch (err) {
-                console.log(err);
-                console.log("Errored")
+                setError("An unexpected error occurred");
             }
         })()
     }, [])
@@ -36,26 +38,44 @@ function ProfilePage(props) {
     };
 
     const toggleEditMode = async () => {
-        if (isEditMode) {
-            const url = `${process.env.REACT_APP_API_URL}/edit`;
-            const res = await axios.post(url, { id: id, email: user.email, firstName: user.firstName, lastName: user.lastName, contactNumber: (user.contactNumber ? user.contactNumber : ""), changedEmail: (user.email !== org.current.email)})
-            console.log(res)
-            if (res.data.success) {
-                alert("Successfully changed!");
-            } else {
-                console.log(org.current)
-                setUser({...org.current});
-                alert("Failed");
+        try {
+            if (isEditMode) {
+                const url = `${process.env.REACT_APP_API_URL}/edit`;
+                const res = await axios.post(url, { id: id, email: user.email, firstName: user.firstName, lastName: user.lastName, contactNumber: (user.contactNumber ? user.contactNumber : ""), changedEmail: (user.email !== org.current.email)})
+                if (res.data.success) {
+                    setSuccessMessage("Successfully changed!");
+                } else {
+                    setUser({...org.current});
+                    setError("Failed to save changes");
+                }
             }
+        } catch (err) {
+            setError("An unexpected error occurred while trying to save changes");
         }
         setIsEditMode(!isEditMode);
     };
+
+    useEffect(() => {
+        if (setSuccessMessage) {
+            const timer = setTimeout(() => {
+                setSuccessMessage('');
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [setSuccessMessage]);
 
     return (
         <div>
             <NavBar id = {id} isHost={isHost} />
             <div className="max-w-[2520px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4">
                 <h1 className="text-2xl font-bold py-6">Profile Page</h1>
+                {successMessage && 
+                <Error 
+                    message={successMessage}
+                    clearError={() => setSuccessMessage("")} 
+                />
+            }
+                {error && <Error message={error} />}
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-10">
                     <div className="px-4 py-5 sm:px-6">
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Personal Information</h3>

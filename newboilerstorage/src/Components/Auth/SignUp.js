@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-
-import axios, * as others from 'axios';
+import axios from 'axios';
 import Navbar from '../Home/NavBar';
-
 import { useNavigate } from 'react-router-dom';
+import Error from '../Home/Error'; 
 
 function SignUp() {
   const [email, setEmail] = useState('');
@@ -11,6 +10,8 @@ function SignUp() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [isHost, setRole] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -35,19 +36,24 @@ function SignUp() {
       const url = `${process.env.REACT_APP_API_URL}/signup`
       const res = await axios.post(url, { email: email, password: password, firstName, lastName, isHost })
       if (res.data.duplicate) {
-        alert("This email has already been registered with an account!")
+        setErrorMessage("This email has already been registered with an account!");
       } else {
-        alert("Successfully signed up!")
-        navigate(`/home/${res.data.id}/${isHost}`, { replace: true })
+        setSuccessMessage("Successfully signed up!");
+        setTimeout(() => {
+          navigate(`/home/${res.data.id}/${isHost}`, { replace: true });
+        }, 1000);
       }
     } catch (err) {
-      console.log(err);
+      setErrorMessage("Error occurred while signing up");
     }
   };
 
-  return (
+      
+    return (
     <div>
       <Navbar id={""} isHost={""} />
+      {errorMessage && <Error setError={setErrorMessage} content={errorMessage} />}
+      {successMessage && <Error setError={setSuccessMessage} content={successMessage} />}
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
           <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">

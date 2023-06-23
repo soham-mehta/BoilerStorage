@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-
-import axios, * as others from 'axios';
+import axios from 'axios';
 import Navbar from '../Home/NavBar';
-
-import { useNavigate, Navigate } from 'react-router-dom'
-
+import { useNavigate } from 'react-router-dom';
+import Error from '../Home/Error'; // Assuming the Message component is in the same directory
 
 function LogIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -24,24 +24,24 @@ function LogIn() {
     try {
       const url = `${process.env.REACT_APP_API_URL}/login`
       const res = await axios.post(url, { email: email, password: password })
-      console.log(res)
       if (res.data.success === true) {
-        alert("Logged in")
-        console.log(res.data.details)
-        navigate(`/home/${res.data.details.id}/${res.data.details.isHost}`, { state: { firstName: res.data.details.firstName, lastName: res.data.details.lastName }, replace: true})
+        setSuccessMessage("Logged in successfully");
+        setTimeout(() => {
+          navigate(`/home/${res.data.details.id}/${res.data.details.isHost}`, { state: { firstName: res.data.details.firstName, lastName: res.data.details.lastName }, replace: true });
+        }, 1000);
       } else {
-        alert(res.data.notExist ? "Account has not been signed up" : "Invalid credentials")
-        console.log("Error to log in");
+        setErrorMessage(res.data.notExist ? "Account has not been signed up" : "Invalid credentials");
       }
     } catch (err) {
-      console.log(err);
-      console.log("Errored")
+      setErrorMessage("Error occurred while logging in");
     }
   };
 
   return (
     <div>
-      <Navbar id ={""} isHost={""} />
+      <Navbar id={""} isHost={""} />
+      {errorMessage && <Error setError={setErrorMessage} content={errorMessage} />}
+      {successMessage && <Error setError={setSuccessMessage} content={successMessage} />}
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full space-y-8 bg-custom-color p-10 rounded-xl">
 
@@ -92,7 +92,6 @@ function LogIn() {
               >
                 Log in
               </button>
-
             </div>
           </form>
         </div>
