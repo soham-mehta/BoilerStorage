@@ -71,11 +71,11 @@ function ProfilePage(props) {
                 <h1 className="text-2xl font-bold py-6">Profile Page</h1>
                 {successMessage && 
                 <Error 
-                    message={successMessage}
-                    clearError={() => setSuccessMessage("")} 
+                    content={successMessage}
+                    setError={() => setSuccessMessage("")} 
                 />
             }
-                {error && <Error message={error} />}
+                {error && <Error content={error} />}
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-10">
                     <div className="px-4 py-5 sm:px-6">
                         <h3 className="text-lg leading-6 font-medium text-gray-900">Personal Information</h3>
