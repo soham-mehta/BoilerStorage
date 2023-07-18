@@ -9,6 +9,8 @@ function LogIn() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [hasError, setErrors ] = useState(false);
   const navigate = useNavigate();
 
   const handleEmailChange = (event) => {
@@ -26,19 +28,24 @@ function LogIn() {
       const res = await axios.post(url, { email: email, password: password })
       if (res.data.success === true) {
         setSuccessMessage("Logged in successfully");
+        setLoggedIn(true);
         setTimeout(() => {
           navigate(`/home/${res.data.details.id}/${res.data.details.isHost}`, { state: { firstName: res.data.details.firstName, lastName: res.data.details.lastName }, replace: true });
-        }, 1000);
+        }, 2000);
       } else {
+        setErrors(true);
         setErrorMessage(res.data.notExist ? "Account has not been signed up" : "Invalid credentials");
       }
     } catch (err) {
-      setErrorMessage("Error occurred while logging in");
+      setErrors(true);
+      setErrorMessage("Failed to Log In");
     }
   };
 
   return (
     <div>
+      { loggedIn && <Error content={"Logged in successfully!"} setError={setLoggedIn}/> }
+      { hasError && <Error content={errorMessage} setError={setErrors} />}
       <Navbar id={""} isHost={""} />
       {errorMessage && <Error setError={setErrorMessage} content={errorMessage} />}
       {successMessage && <Error setError={setSuccessMessage} content={successMessage} />}

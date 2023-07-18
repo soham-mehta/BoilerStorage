@@ -7,8 +7,8 @@ const Navbar = ({ id, isHost }) => {
     { name: "SignUp", href: "/SignUp", included: id === "" },
     { name: "Add New Listing", href: `/addlisting/${id}`, included: isHost === 'true' },
     { name: "Edit Listings", href: `/editlisting/${id}`, included: isHost === 'true' },
-    { name: "View Listings", href: (id !== "" ? `/ListingPage/${id}/${isHost}` : "/"), included: true },
-    { name: "View Pending Requests", href: `/pendingrequests/${id}/${isHost}`, included: true },
+    { name: "View Listings", href: (id !== "" ? `/ListingPage/${id}/${isHost}` : "/ListingPage"), included: true },
+    { name: "View Pending Requests", href: `/pendingrequests/${id}/${isHost}`, included: id !== "" },
     { name: "Contact", href: "mailto:mehta233@purdue.edu", included: true },
     { name: "Profile", href: `/profile/${id}/${isHost}`, included: id !== "" },
     { name: "Log Out", href: "/", included: id !== ""}

@@ -370,7 +370,7 @@ function Hero({ loggedIn, id, isHost }) {
     { name: "Features", href: "#features", home: true, host: false, loggedIn: true },
     { name: "Pricing", href: "#pricing", home: true, host: false, loggedIn: true },
     { name: "FAQ", href: "#faq", home: true, host: false, loggedIn: true },
-    { name: "View Listings", href: "/ListingPage", home: true, host: false, loggedIn: true },
+    { name: "View Listings", href: `/ListingPage`, home: true, host: false, loggedIn: true },
     { name: "Contact", href: "mailto:mehta233@purdue.edu", home: true, host: false, loggedIn: true },
     { name: "Login", href: "/Login", home: true, host: false, loggedIn: false },
     { name: "Sign Up", href: "/SignUp", home: true, host: false, loggedIn: false },

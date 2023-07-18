@@ -32,7 +32,7 @@ function ListingPage() {
 
     return (
         <div>
-            <NavBar id={id} isHost={isHost} />
+            <NavBar id={id ? id : ""} isHost={isHost ? isHost: ""} />
 
             <div
                 className="
